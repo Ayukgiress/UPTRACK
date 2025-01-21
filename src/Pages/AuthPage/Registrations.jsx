@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Narbar from "../../Components/Narbar";
 import Footer from "../../Components/Footer";
+import GoogleAuth from "../../Components/GoogleAuth";
 
 const Registration = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -20,7 +21,7 @@ const Registration = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/users/register`, {
+      const response = await fetch(`https://ticks-api.onrender.com/users/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,21 +61,11 @@ const Registration = () => {
 
   return (
     <>
-    <Narbar/>
+      <Narbar />
       <section className="bg-custom-first min-h-screen flex items-center justify-center bg-custom-gradient">
-        <div className="flex flex-col lg:flex-row w-full max-w-7xl 3xl:max-w-[120rem] px-6 py-8 gap-12 lg:gap-24">
-          <div className="flex flex-col justify-between items-start w-full lg:w-1/2">
-            <div className="flex items-start justify-start text-3xl text-black">
-              <img
-                src='/images/checklist_10552402.png'
-                alt="logo"
-                className="h-10 w-20 md:h-36 md:w-40 rounded-md shadow-sm shadow-button-c xl:w-[39rem] xl:h-[36rem] 2xl:h-[30rem] 3xl:h-[47rem] 3xl:w-[45rem]"
-              />
-            </div>
-          </div>
-
-          {/* Right Content */}
-          <div className="w-full lg:w-1/2 bg-custom-second rounded-lg shadow-md p-6 space-y-4 sm:p-8 3xl:h-[49rem] 3xl:w-[75rem] 3xl:p-16 bg-white ">
+        <div className="flex flex-col lg:flex-row items-center justify-center w-full max-w-7xl 3xl:max-w-[120rem] px-6 py-8 gap-12 lg:gap-24">
+          {/* Centered Content */}
+          <div className="w-full lg:w-1/2 bg-custom-second rounded-lg shadow-md p-6 space-y-4 sm:p-8 3xl:h-[49rem] 3xl:w-[75rem] 3xl:p-16 bg-white">
             <h2 className="text-2xl font-bold text-center mb-6 text-black 3xl:text-4xl">
               Create your account
             </h2>
@@ -165,6 +156,10 @@ const Registration = () => {
                 >
                   {loading ? "Registering..." : "Sign up"}
                 </button>
+              </div>
+
+              <div>
+                <GoogleAuth />
               </div>
 
               <p className="text-sm text-center mt-4 text-black 3xl:text-3xl">

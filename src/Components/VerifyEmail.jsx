@@ -14,7 +14,7 @@ const VerifyEmail = () => {
       if (!token) return;
   
       try {
-        const response = await fetch(`http://localhost:5000/users/verify-email/${token}`, {
+        const response = await fetch(`https://ticks-api.onrender.com/users/verify-email/${token}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

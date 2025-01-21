@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('Fetching current user with token:', token);
       
-      const response = await fetch(`${API_URL}/users/current-user`, {
+      const response = await fetch(`https://ticks-api.onrender.com/users/current-user`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../AuthContext";
 import { Link } from "react-router-dom";
+import GoogleAuth from '../../Components/GoogleAuth';
 // import API_URL from "../Constants/Constants";
 
 const Login = () => {
@@ -25,7 +26,7 @@ const Login = () => {
     setLoading(true);
     console.log("Submitted data:", data);
     try {
-      const response = await fetch(`http://localhost:5000/users/login`, {
+      const response = await fetch(`https://ticks-api.onrender.com/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -132,6 +133,10 @@ const Login = () => {
   >
     {loading ? "Logging in..." : "Log in"}
   </button>
+</div>
+
+<div>
+  <GoogleAuth/>
 </div>
 
               <p className="text-sm text-center mt-4 text-black 3xl:text-3xl">
