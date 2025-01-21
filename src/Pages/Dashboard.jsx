@@ -1,11 +1,24 @@
-import React from 'react'
+import React from 'react';
+import { Outlet, Navigate } from 'react-router-dom'; 
+import Sidebar from '../Components/Sidebar';
+import { useAuth } from './AuthContext';  
 
 const Dashboard = () => {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  )
-}
+  const { isAuthenticated } = useAuth();
 
-export default Dashboard
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <div className="flex items-start justify-start h-screen bg-gray-100">
+    <Sidebar />
+
+    <main className="flex flex-col w-full sm:w-3/4 px-6 py-8  lg:ml-72">
+      <Outlet />
+    </main>
+  </div>
+  );
+};
+
+export default Dashboard;
