@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../Pages/AuthContext';
 import { toast } from 'sonner';
 
-const OAuthCallback = () => {
+const OauthCallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setRefetchCurrentUser } = useAuth();
@@ -29,10 +29,8 @@ const OAuthCallback = () => {
           return;
         }
 
-        // Store the decoded token
         localStorage.setItem('token', decodeURIComponent(token));
         
-        // Trigger user refresh
         setRefetchCurrentUser(prev => !prev);
         
         toast.success('Successfully logged in!');
