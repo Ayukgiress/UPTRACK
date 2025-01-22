@@ -19,7 +19,9 @@ const GoogleAuth = () => {
   const handleGoogleLogin = () => {
     setLoading(true);
     try {
-      window.location.href = `https://ticks-api.onrender.com/users/auth/google`;
+      // Ensure this matches your backend URL exactly
+      const backendUrl = process.env.REACT_APP_API_URL || 'https://ticks-api.onrender.com';
+      window.location.href = `${backendUrl}/users/auth/google`;
     } catch (error) {
       console.error("Google login failed:", error);
       setLoading(false);

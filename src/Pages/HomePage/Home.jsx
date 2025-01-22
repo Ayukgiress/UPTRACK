@@ -84,17 +84,17 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="bg-custom-gradient min-h-screen flex flex-col justify-center items-center w-full">
+    <div className="bg-custom-gradient min-h-screen flex flex-col justify-center items-center w-full xl:w-[95rem] 2xl:w-full 3xl:w-full">
       <Narbar />
       <div className="bg-custom-gradient flex flex-col justify-center items-center w-full">
-        <div className="flex flex-col items-center justify-center p-6 md:p-10 lg:p-24 xl:p-28 3xl:p-64">
+        <div className="flex flex-col items-center justify-center p-6 md:p-10 lg:p-24 xl:p-28 3xl:p-64 h-screen">
           <h1 className="text-black text-center p-10 text-xl font-bold md:text-3xl lg:text-5xl xl:text-7xl 3xl:text-9xl">
             It's All About Getting It Done, Stay <span className="text-yellow-500">Organized,</span> Stay <span className="text-yellow-500">Creative </span>
           </h1>
           <h2 className="flex items-center justify-center text-center font-normal text-base md:text-xl lg:text-2xl xl:text-3xl 3xl:text-5xl">
             Not organized? Join millions of people to capture ideas, <br /> organize tasks, and do something creative.
           </h2>
-          <button className="relative flex h-12 w-40 items-center justify-center overflow-hidden bg-blue-800 text-white shadow-2xl transition-all rounded-3xl 3xl:h-28 3xl:w-[30rem] 3xl:text-5xl">
+          <button className="relative flex h-12 w-40 items-center justify-center overflow-hidden bg-blue-800 text-white shadow-2xl transition-all 2xl:text-2xl 2xl:w-80 rounded-3xl 3xl:h-28 3xl:w-96 3xl:text-5xl 2xl:mt-12">
             <span className="relative z-10">
               <Link to='/register'>Get Started</Link>
             </span>
@@ -103,7 +103,7 @@ const Home = () => {
 
         {/* Todo Section */}
         <div className="w-full flex justify-center items-center mt-40" id="todo-section" data-animate>
-          <div className={`flex flex-col md:flex-row justify-around items-center xl:w-[94rem] bg-yellow-50 shadow-custom-background text-black relative shadow-xl font-mono w-full p-6 transition-all duration-1000 ${
+          <div className={`flex flex-col md:flex-row justify-around items-center xl:w-[90rem] bg-yellow-50 shadow-custom-background text-black relative shadow-xl font-mono w-full p-6 transition-all duration-1000 ${
             isVisible['todo-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
             <div className="flex items-start justify-start flex-col p-10 gap-5 xl:mt-28 ">
@@ -165,11 +165,11 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="w-full p-8 mt-16" id="stats-section" data-animate>
+        <div className="w-full p-8 mt-18 h-lvh" id="stats-section" data-animate>
           <div className={`max-w-7xl mx-auto transition-all duration-1000 ${
             isVisible['stats-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
-            <div className="text-center mb-12">
+            <div className="text-center mt-44">
               <h2 className="text-2xl font-bold text-blue-500 mb-2 3xl:text-4xl">In it for the long haul</h2>
               <h3 className="text-3xl font-bold mb-4 3xl:text-5xl">A todo web app you can trust for life</h3>
               <p className="text-gray-600 3xl:text-2xl">
@@ -177,20 +177,20 @@ const Home = () => {
               </p>
             </div>
             
-            <div className="flex items-center justify-center gap-4 flex-wrap">
+            <div className="flex items-center justify-center gap-4 flex-wrap  w-full">
               {statsData.map((stat, index) => (
                 <div
                   key={index}
-                  className={`relative bg-white rounded-xl p-6 shadow-lg transition-all duration-500 transform hover:-translate-y-2 hover:shadow-xl w-full sm:w-[250px] md:w-[300px] lg:w-[350px] xl:w-[400px] 3xl:w-[450px] ${
+                  className={`relative flex items-center justify-center bg-white rounded-xl p-6 shadow-lg transition-all duration-500 transform hover:-translate-y-2 hover:shadow-xl w-full sm:w-[250px] md:w-[300px] lg:w-[140px] xl:w-[243px] 3xl:w-[243px] ${
                     currentIndex === index ? 'scale-105' : 'scale-100'
                   }`}
                 >
-                  <div className="3xl:mt-32">
+                  <div className="3xl:mt-20">
                     <div className={`${stat.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-transform duration-300 hover:rotate-12`}>
                       <stat.icon className="text-white" size={32} strokeWidth={1.5} />
                     </div>
                     <div className="text-center">
-                      <h4 className="text-xl font-bold text-gray-800 mb-1 3xl:w-[22rem] 3xl:text-3xl">{stat.value}</h4>
+                      <h4 className="text-xl font-bold text-gray-800 mb-1  3xl:text-3xl">{stat.value}</h4>
                       <p className="text-lg font-semibold text-gray-700 mb-2 3xl:text-2xl">{stat.text}</p>
                       <p className="text-sm text-gray-600">{stat.description}</p>
                     </div>
@@ -247,7 +247,7 @@ const Home = () => {
               key={index}
               id={`card-${index}`}
               data-animate
-              className={`xl:w-[28rem] w-[90%] sm:w-[22rem] bg-white xl:h-[28rem] 3xl:w-[44rem] 3xl:h-[37rem] h-[auto] rounded-2xl shadow-xl shadow-custom-background flex justify-start items-start p-6 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${
+              className={`2xl:w-[28rem] xl:w-[25rem] w-[90%] sm:w-[20rem] lg:w-[18rem] bg-white xl:h-[28rem] 3xl:w-[44rem] 3xl:h-[37rem] h-[auto] rounded-2xl shadow-xl shadow-custom-background flex justify-start items-start p-6 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${
                 isVisible[`card-${index}`] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               }`}
             >

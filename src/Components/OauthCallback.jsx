@@ -3,13 +3,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../Pages/AuthContext';
 import { toast } from 'sonner';
 
-const OauthCallback = () => {
+const OAuthCallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setRefetchCurrentUser } = useAuth();
 
   useEffect(() => {
-    console.log('OauthCallback mounted, search params:', window.location.search);
     const handleCallback = async () => {
       try {
         const urlParams = new URLSearchParams(location.search);
@@ -17,8 +16,8 @@ const OauthCallback = () => {
         const error = urlParams.get('error');
 
         if (error) {
-          console.error('Authentication error:', error);
-          toast.error(`Authentication failed: ${error}`);
+          console.error('Authentication error:', decodeURIComponent(error));
+          toast.error(`Authentication failed: ${decodeURIComponent(error)}`);
           navigate('/login');
           return;
         }
@@ -30,8 +29,10 @@ const OauthCallback = () => {
           return;
         }
 
-        localStorage.setItem('token', token);
+        // Store the decoded token
+        localStorage.setItem('token', decodeURIComponent(token));
         
+        // Trigger user refresh
         setRefetchCurrentUser(prev => !prev);
         
         toast.success('Successfully logged in!');
