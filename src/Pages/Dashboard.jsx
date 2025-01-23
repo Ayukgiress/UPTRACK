@@ -14,7 +14,7 @@ const Dashboard = () => {
     <div className="flex items-start justify-start h-screen bg-gray-100">
     <Sidebar />
 
-    <main className="flex flex-col w-full sm:w-3/4 px-6 py-8  lg:ml-72">
+    <main className="flex flex-col w-full sm:w-3/4 px-6 py-8  lg:ml-72 xl:w-[190rem] h-full">
       <Outlet />
     </main>
   </div>

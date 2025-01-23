@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 // import API_URL from '../Pages/Constants/Constants';
-import Footer from './Footer';
 
 const VerifyEmail = () => {
   const { token } = useParams();
@@ -73,7 +72,6 @@ const VerifyEmail = () => {
         </>
       )}
     </div>
-    <Footer/>
     </>
   );
 };
