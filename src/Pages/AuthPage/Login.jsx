@@ -33,15 +33,15 @@ const Login = () => {
         },
         body: JSON.stringify(data),
       });
-
+  
       setLoading(false);
-
+  
       if (response.ok) {
         const { accessToken, refreshToken } = await response.json();
-        localStorage.setItem("token", accessToken);
+        localStorage.setItem("token", accessToken); 
         localStorage.setItem("refreshToken", refreshToken);
         setRefetchCurrentUser((prev) => !prev);
-        toast.success("Login Successfull");
+        toast.success("Login Successful");
         navigate("/dashboard");
       } else {
         const errorData = await response.json();
