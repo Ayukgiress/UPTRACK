@@ -29,6 +29,7 @@ const Sidebar = () => {
     { icon: Clock, text: 'Pending Todos', path: '/dashboard/pending' },
     { icon: CheckCircle, text: 'Completed', path: '/dashboard/completed' },
     { icon: Settings, text: 'Settings', path: '/dashboard/settings' }
+    
   ];
 
   return (

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Pages/AuthContext';
-// import { API_URL } from '../../constants';
 import { toast } from 'sonner';
 
 const GoogleAuth = () => {

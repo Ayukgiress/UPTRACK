@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useAuth } from '../AuthContext';
+import { useAuth } from './AuthContext';
 
 const TodoDetail = () => {
     const { id } = useParams(); 

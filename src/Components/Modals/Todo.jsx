@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
   const [todo, setTodo] = useState(getInitialTodoState());
   const [errors, setErrors] = useState({});
-  const [assignedTo, setAssignedTo] = useState(''); // New state for assignedTo
+  const [assignedTo, setAssignedTo] = useState(''); 
 
   function getInitialTodoState() {
     return {
@@ -25,7 +25,6 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
       newErrors.title = 'Title is required';
     }
 
-    // Optional: Add more validation rules
     if (todo.dueDate && new Date(todo.dueDate) < new Date()) {
       newErrors.dueDate = 'Due date must be in the future';
     }
@@ -40,7 +39,6 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
       [field]: value
     }));
     
-    // Clear specific field errors when user starts typing
     if (errors[field]) {
       const newErrors = { ...errors };
       delete newErrors[field];
@@ -79,19 +77,17 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
             .map(sub => ({ ...sub, title: sub.title.trim() }))
             .filter(sub => sub.title !== ''),
           completed: false,
-          assignedTo: assignedTo.trim() // Include assignedTo in the cleanedTodo
+          assignedTo: assignedTo.trim() 
         };
 
         await onAddTodos(cleanedTodo);
         
-        // Use toast for success notification
         toast.success('Todo added successfully!');
         
         setTodo(getInitialTodoState());
-        setAssignedTo(''); // Reset assignedTo
+        setAssignedTo(''); 
         onClose();
       } catch (error) {
-        // Use toast for error notification
         toast.error('Failed to add todo. Please try again.');
         console.error('Todo creation error:', error);
       }
@@ -198,7 +194,7 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
 
           {errors.submit && <p className="text-red-500 text-sm text-center">{errors.submit}</p>}
 
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="flex justify-between gap-2 pt-4">
             <button
               type="button"
               onClick={onClose}
