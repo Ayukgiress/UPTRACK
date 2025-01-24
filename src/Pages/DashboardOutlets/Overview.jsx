@@ -4,12 +4,15 @@ import { useAuth } from "../AuthContext";
 import { CheckCircle, Clock, List, Circle, Trash2 } from "lucide-react"; 
 import TodoModal from "../../Components/Modals/Todo";
 import { toast } from "sonner";
+import EditTodoModal from "../../Components/Modals/EditTodoModal";
 
 const Overview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [todos, setTodos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { isAuthenticated, currentUser, currentUserLoading } = useAuth();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentTodo, setCurrentTodo] = useState(null); 
 
   useEffect(() => {
     fetchTodos();
@@ -26,7 +29,7 @@ const Overview = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:5000/todos/api/todos/${currentUser._id}`,
+        `https://ticks-api.onrender.com/todos/api/todos/${currentUser._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,7 +51,7 @@ const Overview = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/todos/api/todos",
+        "https://ticks-api.onrender.com/todos/api/todos",
         newTodo,
         {
           headers: {
@@ -61,10 +64,7 @@ const Overview = () => {
       toast.success("Todo added successfully!");
       return response.data;
     } catch (error) {
-      console.error(
-        "Error adding todo:",
-        error.response?.data || error.message
-      );
+      console.error("Error adding todo:", error.response?.data || error.message);
       toast.error("Failed to add todo");
       throw error;
     }
@@ -82,7 +82,7 @@ const Overview = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/todos/api/todos/${updatedTodos[index]._id}`,
+        `https://ticks-api.onrender.com/todos/api/todos/${updatedTodos[index]._id}`,
         updatedTodos[index],
         {
           headers: {
@@ -106,7 +106,7 @@ const Overview = () => {
     if (!token) return;
 
     try {
-      await axios.delete(`http://localhost:5000/todos/api/todos/${todoId}`, {
+      await axios.delete(`https://ticks-api.onrender.com/todos/api/todos/${todoId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -116,6 +116,44 @@ const Overview = () => {
     } catch (error) {
       console.error("Delete todo error:", error);
       toast.error("Failed to delete todo");
+    }
+  };
+
+  const handleOpenEditModal = (todo) => {
+    setCurrentTodo(todo);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setCurrentTodo(null);
+    setIsEditModalOpen(false);
+  };
+
+  const editTodo = async (updatedTodo) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await axios.put(
+        `https://ticks-api.onrender.com/todos/api/todos/edit/${updatedTodo._id}`,
+        updatedTodo,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setTodos((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo._id === response.data._id ? response.data : todo
+        )
+      );
+      toast.success("Todo updated successfully!");
+      handleCloseEditModal();
+    } catch (error) {
+      console.error("Error updating todo:", error);
+      toast.error("Failed to update todo");
     }
   };
 
@@ -129,8 +167,8 @@ const Overview = () => {
   const completedTodosList = todos.filter((todo) => todo.completed);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center">
-      <div className="flex items-center justify-between w-full mb-4">
+    <div className="w-full flex flex-col items-center justify-center px-4">
+      <div className="flex items-center justify-between w-full mb-4 flex-wrap">
         <div className="flex items-center justify-center gap-7">
           <h1 className="text-2xl font-bold">Overview</h1>
         </div>
@@ -147,27 +185,27 @@ const Overview = () => {
         onClose={handleCloseModal}
         onAddTodos={handleAddTodos}
       />
+      <EditTodoModal
+        isOpen={isEditModalOpen}
+        onClose={handleCloseEditModal}
+        todo={currentTodo}
+        onEditTodo={editTodo}
+      />
 
-      <div className="mt-6 flex justify-between w-full">
-        <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg w-1/3 shadow-md">
+      <div className="mt-6 flex flex-wrap justify-between w-full ">
+        <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg w-full md:w-1/3 shadow-md mb-4">
           <Clock size={32} className="text-yellow-500 mb-4" />
-          <h3 className="text-xl font-semibold">
-            Pending ({remainingTodos.length})
-          </h3>
+          <h3 className="text-xl font-semibold">Pending ({remainingTodos.length})</h3>
         </div>
 
-        <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg w-1/3 shadow-md">
+        <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg w-full md:w-1/3 shadow-md mb-4">
           <CheckCircle size={32} className="text-green-500 mb-4" />
-          <h3 className="text-xl font-semibold">
-            Completed ({completedTodosList.length})
-          </h3>
+          <h3 className="text-xl font-semibold">Completed ({completedTodosList.length})</h3>
         </div>
 
-        <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg w-1/3 shadow-md">
+        <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg w-full md:w-1/3 shadow-md mb-4">
           <List size={32} className="text-blue-500 mb-4" />
-          <h3 className="text-xl font-semibold">
-            Total Todos ({todos.length})
-          </h3>
+          <h3 className="text-xl font-semibold">Total Todos ({todos.length})</h3>
         </div>
       </div>
 
@@ -176,12 +214,12 @@ const Overview = () => {
         <ul className="mt-4 space-y-2">
           {todos.map((todo, index) => (
             <li
-              key={index}
+              key={todo._id}
               className={`flex flex-col p-4 rounded-md transition-all duration-200 
                 ${todo.completed ? "bg-gray-200" : "bg-white"} 
                 hover:shadow-lg border border-gray-200`}
             >
-              <div className="flex items-center justify-between gap-7">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div className="flex items-center flex-1 gap-3">
                   <button
                     onClick={() => toggleTodoCompletion(index)}
@@ -193,38 +231,20 @@ const Overview = () => {
                       <Circle className="w-6 h-6 text-gray-400 cursor-pointer" />
                     )}
                   </button>
-                  <div
-                    className={`flex-1 ${
-                      todo.completed
-                        ? "text-gray-500 line-through"
-                        : "text-gray-800"
-                    } transition-all`}
-                  >
+                  <div className={`flex-1 ${todo.completed ? "text-gray-500 line-through" : "text-gray-800"} transition-all`}>
                     <span className="font-bold text-lg">{todo.title}</span>
-
                     {todo.description && (
                       <span className="ml-2 text-sm text-gray-600">
                         {todo.description}
                       </span>
                     )}
-
                     <div className="mt-2 flex gap-4 text-sm text-gray-500">
                       {todo.priority && (
-                        <span
-                          className={`px-2 py-1 rounded-full text-white 
-        ${
-          todo.priority === "high"
-            ? "bg-red-500"
-            : todo.priority === "medium"
-            ? "bg-yellow-500"
-            : "bg-green-500"
-        }`}
-                        >
-                          {todo.priority.charAt(0).toUpperCase() +
-                            todo.priority.slice(1)}
+                        <span className={`px-2 py-1 rounded-full text-white 
+                          ${todo.priority === "high" ? "bg-red-500" : todo.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}>
+                          {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}
                         </span>
                       )}
-
                       {todo.dueDate && (
                         <span className="px-2 py-1 rounded-lg bg-gray-200 text-gray-700">
                           Due: {new Date(todo.dueDate).toLocaleDateString()}
@@ -233,34 +253,22 @@ const Overview = () => {
                     </div>
                   </div>
                 </div>
-
-                {todo.subtodos && todo.subtodos.length > 0 && (
+                <div className="flex items-center space-x-2">
+                  <button onClick={() => handleOpenEditModal(todo)} className="text-blue-500 hover:text-blue-600 text-sm">Edit</button>
                   <button
-                    className="bg-blue-500 text-white rounded-full px-3 py-1 text-sm ml-2 hover:bg-blue-600 transition-colors"
-                    onClick={() => toggleSubtaskVisibility(index)}
+                    onClick={() => handleDeleteTodo(todo._id)}
+                    className="text-red-500 hover:text-red-600"
                   >
-                    {todo.subtodos.length} sub Task
+                    <Trash2 size={20} />
                   </button>
-                )}
-                <button
-                  onClick={() => handleDeleteTodo(todo._id)}
-                  className="text-red-500 hover:text-red-600"
-                >
-                  <Trash2 size={20} />
-                </button>
+                </div>
               </div>
               {todo.showSubtasks && todo.subtodos && (
                 <div className="mt-4 ml-9">
-                  <h4 className="font-semibold text-gray-700 mb-2">
-                    Subtasks:
-                  </h4>
+                  <h4 className="font-semibold text-gray-700 mb-2">Subtasks:</h4>
                   <ul className="space-y-2">
                     {todo.subtodos.map((subtask, subIndex) => (
-                      <li
-                        key={subIndex}
-                        className={`flex items-center gap-3 text-gray-600 
-                          ${subtask.completed ? "line-through" : ""}`}
-                      >
+                      <li key={subIndex} className={`flex items-center gap-3 text-gray-600 ${subtask.completed ? "line-through" : ""}`}>
                         <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
                         {subtask.title}
                       </li>
