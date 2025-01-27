@@ -26,6 +26,7 @@ const SupervisorTodoView = () => {
                         headers: { 'Content-Type': 'application/json' }
                     }
                 );
+                console.log('Todo data received:', response.data); // Debug log
                 setTodo(response.data);
             } catch (error) {
                 console.error("Error fetching todo:", error);
@@ -38,34 +39,24 @@ const SupervisorTodoView = () => {
         fetchTodo();
     }, [id, supervisorEmail]);
 
-    const handleMarkComplete = async () => {
-        try {
-            const response = await axios.put(
-                `${import.meta.env.VITE_API_URL}/api/todos/supervisor/${id}`,
-                { completed: !todo.completed },
-                { 
-                    params: { email: supervisorEmail },
-                    headers: { 'Content-Type': 'application/json' }
-                }
-            );
-            setTodo(response.data);
-            toast.success(`Todo marked as ${response.data.completed ? 'completed' : 'pending'}`);
-        } catch (error) {
-            toast.error("Failed to update todo status");
-        }
-    };
-
     if (isLoading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
     if (!todo) return <div className="flex justify-center items-center h-screen">Todo not found.</div>;
 
+    // Debug log for rendering
+    console.log('Rendering todo:', {
+        title: todo.title,
+        description: todo.description,
+        subtodos: todo.subtodos
+    });
+
     return (
         <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-10">
-            <h2 className="text-3xl font-bold mb-4">{todo.title}</h2>
+            <h2 className="text-3xl font-bold mb-4">{todo.title || 'No Title'}</h2>
             <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                <p className="text-gray-700">{todo.description}</p>
+                <p className="text-gray-700">{todo.description || 'No Description'}</p>
             </div>
             
-            {todo.subtodos?.length > 0 && (
+            {todo.subtodos && todo.subtodos.length > 0 && (
                 <div className="mb-4">
                     <h3 className="text-xl font-semibold mb-2">Subtasks:</h3>
                     <ul className="list-disc pl-6">
@@ -84,12 +75,12 @@ const SupervisorTodoView = () => {
                         todo.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-green-100 text-green-800'
                     }`}>
-                        {todo.priority}
+                        {todo.priority || 'Not set'}
                     </span>
                 </div>
                 <div className="bg-gray-50 p-3 rounded">
                     <p className="font-semibold">Due Date:</p>
-                    <p>{new Date(todo.dueDate).toLocaleDateString()}</p>
+                    <p>{todo.dueDate ? new Date(todo.dueDate).toLocaleDateString() : 'No due date'}</p>
                 </div>
             </div>
             
