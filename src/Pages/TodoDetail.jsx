@@ -20,13 +20,16 @@ const SupervisorTodoView = () => {
 
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/api/todos/supervisor/${id}`,
+                    `https://ticks-api.onrender.com/api/todos/supervisor/${id}`,
                     { 
                         params: { email: supervisorEmail },
-                        headers: { 'Content-Type': 'application/json' }
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
                     }
                 );
-                console.log('Todo data received:', response.data); // Debug log
+                console.log('Todo data received:', response.data);
                 setTodo(response.data);
             } catch (error) {
                 console.error("Error fetching todo:", error);
@@ -39,15 +42,28 @@ const SupervisorTodoView = () => {
         fetchTodo();
     }, [id, supervisorEmail]);
 
+    const handleMarkComplete = async () => {
+        if (!todo) return;
+        
+        try {
+            const response = await axios.put(
+                `https://ticks-api.onrender.com/api/todos/supervisor/${id}`,
+                { completed: !todo.completed },
+                { 
+                    params: { email: supervisorEmail },
+                    headers: { 'Content-Type': 'application/json' }
+                }
+            );
+            setTodo(response.data);
+            toast.success(`Todo marked as ${response.data.completed ? 'completed' : 'pending'}`);
+        } catch (error) {
+            console.error("Error updating todo:", error);
+            toast.error("Failed to update todo status");
+        }
+    };
+
     if (isLoading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
     if (!todo) return <div className="flex justify-center items-center h-screen">Todo not found.</div>;
-
-    // Debug log for rendering
-    console.log('Rendering todo:', {
-        title: todo.title,
-        description: todo.description,
-        subtodos: todo.subtodos
-    });
 
     return (
         <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-10">
