@@ -29,15 +29,20 @@ const GoogleAuth = () => {
 
   return (
     <div className="flex items-center justify-center flex-col w-full">
-      <button
-        onClick={handleGoogleLogin}
-        className="w-full h-11 3xl:h-24 3xl:text-4xl rounded-md text-white flex items-center justify-center bg-black transition-colors hover:bg-gray-800"
-        disabled={loading}
-      >
-        <FcGoogle className={`m-2 h-7 w-10 3xl:h-24 ${loading ? 'animate-spin' : ''}`} />
-        {loading ? 'Loading...' : 'Login with Google'}
-      </button>
-    </div>
+    <button
+      onClick={handleGoogleLogin}
+      className="w-full h-11 3xl:h-24 3xl:text-4xl rounded-md text-white flex items-center justify-center bg-black transition-colors hover:bg-gray-800"
+      disabled={loading}
+    >
+      {loading ? (
+        <div className="w-6 h-6 border-4 border-t-4 border-white rounded-full animate-spin" />
+      ) : (
+        <FcGoogle className="m-2 h-7 w-10 3xl:h-24" />
+      )}
+      {loading ? 'Loading...' : 'Login with Google'}
+    </button>
+  </div>
+  
   );
 };
 

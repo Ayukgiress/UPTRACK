@@ -1,13 +1,13 @@
-import React, { useState } from 'react';  // Add useState import here
-import Narbar from '../../Components/Narbar';
-import Footer from '../../Components/Footer';
+import React, { useState } from "react";
+import Narbar from "../../Components/Narbar";
+import Footer from "../../Components/Footer";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../AuthContext";
 import { Link } from "react-router-dom";
-import GoogleAuth from '../../Components/GoogleAuth';
+import GoogleAuth from "../../Components/GoogleAuth";
 // import API_URL from "../Constants/Constants";
 
 const Login = () => {
@@ -26,19 +26,22 @@ const Login = () => {
     setLoading(true);
     console.log("Submitted data:", data);
     try {
-      const response = await fetch(`https://ticks-api.onrender.com/users/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-  
+      const response = await fetch(
+        `https://ticks-api.onrender.com/users/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
       setLoading(false);
-  
+
       if (response.ok) {
         const { accessToken, refreshToken } = await response.json();
-        localStorage.setItem("token", accessToken); 
+        localStorage.setItem("token", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
         setRefetchCurrentUser((prev) => !prev);
         toast.success("Login Successful");
@@ -126,18 +129,18 @@ const Login = () => {
               </div>
 
               <div className="flex justify-center items-center">
-  <button
-    type="submit"
-    className=" flex h-[50px] w-full items-center justify-center  bg-blue-800 text-white rounded-2xl 3xl:h-28 3xl:w-[30rem] 3xl:text-5xl"
-    disabled={loading}
-  >
-    {loading ? "Logging in..." : "Log in"}
-  </button>
-</div>
+                <button
+                  type="submit"
+                  className=" flex h-[50px] w-full items-center justify-center  bg-blue-800 text-white rounded-2xl 3xl:h-28 3xl:w-[30rem] 3xl:text-5xl"
+                  disabled={loading}
+                >
+                  {loading ? "Logging in..." : "Log in"}
+                </button>
+              </div>
 
-<div>
-  <GoogleAuth/>
-</div>
+              <div>
+                <GoogleAuth />
+              </div>
 
               <p className="text-sm text-center mt-4 text-black 3xl:text-3xl">
                 Don't have an account?{" "}

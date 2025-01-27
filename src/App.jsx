@@ -22,7 +22,8 @@ import Pending from './Pages/DashboardOutlets/Pending'
 import Completed from './Pages/DashboardOutlets/Completed'
 import Overview from './Pages/DashboardOutlets/Overview'
 import Settings from './Pages/DashboardOutlets/Settings'
-import TodoDetail from './Pages/DashboardOutlets/Pending'
+import SupervisorTodoView from './Pages/TodoDetail'
+
 
 function App() {
 
@@ -38,7 +39,7 @@ function App() {
           <Route path="/verify-email" element={<VerifyEmails />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/oauth-callback" element={<OauthCallback />} />
-          <Route path="/todos/:id" element={<TodoDetail />} />
+          <Route path="/supervisor/todos/:id" element={<SupervisorTodoView />} />
 
            <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<Overview />} />
