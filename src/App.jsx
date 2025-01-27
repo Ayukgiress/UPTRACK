@@ -40,7 +40,6 @@ function App() {
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/oauth-callback" element={<OauthCallback />} />
           <Route path="/supervisor/todos/:id" element={<SupervisorTodoView />} />
-
            <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<Overview />} />
             <Route path="settings" element={<Settings />} />

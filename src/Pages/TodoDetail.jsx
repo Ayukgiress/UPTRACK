@@ -12,10 +12,19 @@ const SupervisorTodoView = () => {
 
     useEffect(() => {
         const fetchTodo = async () => {
+            if (!supervisorEmail) {
+                setIsLoading(false);
+                toast.error("Supervisor email is required");
+                return;
+            }
+
             try {
                 const response = await axios.get(
-                    `https://ticks-api.onrender.com/api/todos/supervisor/${id}?email=${supervisorEmail}`,
-                    { headers: { 'Content-Type': 'application/json' } }
+                    `${import.meta.env.VITE_API_URL}/api/todos/supervisor/${id}`,
+                    { 
+                        params: { email: supervisorEmail },
+                        headers: { 'Content-Type': 'application/json' }
+                    }
                 );
                 setTodo(response.data);
             } catch (error) {
@@ -26,13 +35,25 @@ const SupervisorTodoView = () => {
             }
         };
 
-        if (supervisorEmail) {
-            fetchTodo();
-        } else {
-            setIsLoading(false);
-            toast.error("Supervisor email is required");
-        }
+        fetchTodo();
     }, [id, supervisorEmail]);
+
+    const handleMarkComplete = async () => {
+        try {
+            const response = await axios.put(
+                `${import.meta.env.VITE_API_URL}/api/todos/supervisor/${id}`,
+                { completed: !todo.completed },
+                { 
+                    params: { email: supervisorEmail },
+                    headers: { 'Content-Type': 'application/json' }
+                }
+            );
+            setTodo(response.data);
+            toast.success(`Todo marked as ${response.data.completed ? 'completed' : 'pending'}`);
+        } catch (error) {
+            toast.error("Failed to update todo status");
+        }
+    };
 
     if (isLoading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
     if (!todo) return <div className="flex justify-center items-center h-screen">Todo not found.</div>;
@@ -72,17 +93,29 @@ const SupervisorTodoView = () => {
                 </div>
             </div>
             
-            <div className="mt-4">
-                <p className="font-semibold">Status:</p>
-                <span className={`inline-block px-2 py-1 rounded ${
-                    todo.completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                }`}>
-                    {todo.completed ? "Completed" : "Pending"}
-                </span>
+            <div className="flex justify-between items-center mt-4">
+                <div>
+                    <p className="font-semibold">Status:</p>
+                    <span className={`inline-block px-2 py-1 rounded ${
+                        todo.completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                        {todo.completed ? "Completed" : "Pending"}
+                    </span>
+                </div>
+                
+                <button
+                    onClick={handleMarkComplete}
+                    className={`px-4 py-2 rounded ${
+                        todo.completed 
+                            ? 'bg-yellow-500 hover:bg-yellow-600' 
+                            : 'bg-green-500 hover:bg-green-600'
+                    } text-white`}
+                >
+                    Mark as {todo.completed ? 'Pending' : 'Completed'}
+                </button>
             </div>
         </div>
     );
 };
 
-
-export default SupervisorTodoView
+export default SupervisorTodoView;
