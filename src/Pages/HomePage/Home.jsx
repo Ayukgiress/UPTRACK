@@ -94,14 +94,13 @@ const Home = () => {
           <h2 className="flex items-center justify-center text-center font-normal text-base md:text-xl lg:text-2xl xl:text-3xl 3xl:text-5xl">
             Not organized? Join millions of people to capture ideas, <br /> organize tasks, and do something creative.
           </h2>
-          <button className="relative flex h-12 w-40 items-center justify-center overflow-hidden bg-blue-800 text-white shadow-2xl transition-all 2xl:text-2xl 2xl:w-80 rounded-3xl 3xl:h-28 3xl:w-96 3xl:text-5xl 2xl:mt-12">
+          <button className="relative flex h-12 w-40 items-center justify-center overflow-hidden bg-blue-800 text-white shadow-2xl transition-all 2xl:text-2xl 2xl:w-80 rounded-3xl 3xl:h-28 3xl:w-[38rem] 3xl:text-5xl 2xl:mt-12">
             <span className="relative z-10">
               <Link to='/register'>Get Started</Link>
             </span>
           </button>
         </div>
 
-        {/* Todo Section */}
         <div className="w-full flex justify-center items-center mt-40" id="todo-section" data-animate>
           <div className={`flex flex-col md:flex-row justify-around items-center xl:w-[90rem] bg-yellow-50 shadow-custom-background text-black relative shadow-xl font-mono w-full p-6 transition-all duration-1000 ${
             isVisible['todo-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
@@ -169,7 +168,7 @@ const Home = () => {
           <div className={`max-w-7xl mx-auto transition-all duration-1000 ${
             isVisible['stats-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
-            <div className="text-center mt-44">
+            <div className="text-center mt-44 3xl:mt-[28rem]">
               <h2 className="text-2xl font-bold text-blue-500 mb-2 3xl:text-4xl">In it for the long haul</h2>
               <h3 className="text-3xl font-bold mb-4 3xl:text-5xl">A todo web app you can trust for life</h3>
               <p className="text-gray-600 3xl:text-2xl">
@@ -181,7 +180,7 @@ const Home = () => {
               {statsData.map((stat, index) => (
                 <div
                   key={index}
-                  className={`relative flex items-center justify-center bg-white rounded-xl p-6 shadow-lg transition-all duration-500 transform hover:-translate-y-2 hover:shadow-xl w-full sm:w-[250px] md:w-[300px] lg:w-[140px] xl:w-[243px] 3xl:w-[243px] ${
+                  className={`relative flex items-center justify-center bg-white rounded-xl p-6 shadow-lg transition-all duration-500 transform hover:-translate-y-2 hover:shadow-xl w-full sm:w-[250px] md:w-[300px] lg:w-[140px] xl:w-[243px] 3xl:w-[390px] 3xl:gap-86 ${
                     currentIndex === index ? 'scale-105' : 'scale-100'
                   }`}
                 >
