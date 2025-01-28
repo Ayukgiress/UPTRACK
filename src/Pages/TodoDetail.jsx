@@ -25,7 +25,7 @@ const SupervisorTodoView = () => {
                 const response = await axios.get(
                     `https://ticks-api.onrender.com/api/todos/supervisor/${id}`,
                     { 
-                        params: { email: supervisorEmail.toLowerCase() }, /
+                        params: { email: supervisorEmail.toLowerCase() }, 
                         headers: { 
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
