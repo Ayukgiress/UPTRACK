@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const SupervisorTodoView = () => {
     const { id } = useParams();
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const supervisorEmail = searchParams.get('email');
     const [todo, setTodo] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchTodo = async () => {
             if (!supervisorEmail) {
+                setError("Supervisor email is missing");
                 setIsLoading(false);
                 toast.error("Supervisor email is required");
                 return;
@@ -22,25 +25,40 @@ const SupervisorTodoView = () => {
                 const response = await axios.get(
                     `https://ticks-api.onrender.com/api/todos/supervisor/${id}`,
                     { 
-                        params: { email: supervisorEmail },
+                        params: { email: supervisorEmail.toLowerCase() }, 
                         headers: { 
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         }
                     }
                 );
-                setTodo(response.data);
+                
+                if (response.data) {
+                    setTodo(response.data);
+                    setError(null);
+                } else {
+                    setError("Todo not found");
+                    toast.error("Todo not found");
+                }
             } catch (error) {
                 const errorMessage = error.response?.data?.error || "Failed to load todo";
+                setError(errorMessage);
                 console.error("Error fetching todo:", error);
                 toast.error(errorMessage);
+                
+                // If unauthorized or not found, redirect after a delay
+                if (error.response?.status === 401 || error.response?.status === 404) {
+                    setTimeout(() => navigate('/'), 3000);
+                }
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchTodo();
-    }, [id, supervisorEmail]);
+    }, [id, supervisorEmail, navigate]);
+
+    // ... keep existing handleMarkComplete function and rendering logic ...
 
     const handleMarkComplete = async () => {
         if (!todo) return;
