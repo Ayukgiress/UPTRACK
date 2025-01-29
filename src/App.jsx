@@ -22,8 +22,6 @@ import Pending from './Pages/DashboardOutlets/Pending'
 import Completed from './Pages/DashboardOutlets/Completed'
 import Overview from './Pages/DashboardOutlets/Overview'
 import Settings from './Pages/DashboardOutlets/Settings'
-// import SupervisorTodoView from './Pages/TodoDetail'
-import PublicTodoView from './Pages/TodoDetail'
 import TodoDetail from './Pages/TodoDetail'
 
 
