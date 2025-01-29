@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
+import { useAuth } from '../Pages/AuthContext';
 import { LogOut } from 'lucide-react';
 
 const Navbar = () => {
