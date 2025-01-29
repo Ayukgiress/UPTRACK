@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, Clock, CheckCircle, Settings, Grid } from 'lucide-react';  // Use Grid for Overview
+import { Menu, X, Home, Clock, CheckCircle, Settings, Grid } from 'lucide-react'; 
 import Profile from './Profile';
 
 const Sidebar = () => {
@@ -25,10 +25,10 @@ const Sidebar = () => {
 
   const menuItems = [
     { icon: Home, text: 'Home', path: '/' },
-    { icon: Grid, text: 'Overview', path: '/dashboard' },  // Updated icon here
+    { icon: Grid, text: 'Overview', path: '/dashboard' },  
     { icon: Clock, text: 'Pending Todos', path: '/dashboard/pending' },
     { icon: CheckCircle, text: 'Completed', path: '/dashboard/completed' },
-    { icon: Settings, text: 'Settings', path: '/dashboard/settings' }
+    // { icon: Settings, text: 'Settings', path: '/dashboard/settings' }
     
   ];
 
@@ -72,7 +72,7 @@ const Sidebar = () => {
           </h1>
         </div>
 
-        <nav className="mt-6">
+        <nav className="mt-6 gap-8">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
