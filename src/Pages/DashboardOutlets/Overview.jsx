@@ -37,7 +37,13 @@ const Overview = () => {
         }
       );
 
-      setTodos(response.data);
+      const filteredTodos = response.data.filter(todo => {
+        const dueDate = new Date(todo.dueDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        return dueDate >= today || todo.completed; 
+      });
+      setTodos(filteredTodos);
     } catch (error) {
       console.error("Error fetching todos:", error);
       toast.error("Failed to load todos");
@@ -48,6 +54,11 @@ const Overview = () => {
 
   const handleAddTodos = async (newTodo) => {
     const token = localStorage.getItem("token");
+
+    if (new Date(newTodo.dueDate) < new Date()) {
+      toast.error("Due date must be today or in the future.");
+      return;
+    }
 
     try {
       const response = await axios.post(
