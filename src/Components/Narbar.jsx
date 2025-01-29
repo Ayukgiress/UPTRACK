@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../Pages/AuthContext';
+import { LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(prevState => !prevState);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -32,20 +42,42 @@ const Navbar = () => {
         >
           <li>Home</li>
         </Link>
-        <Link
-          to="/register"
-          onClick={() => setIsMobileMenuOpen(false)}
-          className="hover:text-gray-600 3xl:text-3xl"
-        >
-          <li>Register</li>
-        </Link>
-        <Link
-          to="/login"
-          onClick={() => setIsMobileMenuOpen(false)}
-          className="hover:text-gray-600 3xl:text-3xl"
-        >
-          <li>Login</li>
-        </Link>
+
+        {isAuthenticated ? (
+          <>
+            <Link
+              to="/dashboard"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-gray-600 3xl:text-3xl"
+            >
+              <li>Dashboard</li>
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 hover:text-red-600 3xl:text-3xl"
+            >
+              <LogOut size={20} />
+              <span>Logout</span>
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              to="/register"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-gray-600 3xl:text-3xl"
+            >
+              <li>Register</li>
+            </Link>
+            <Link
+              to="/login"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-gray-600 3xl:text-3xl"
+            >
+              <li>Login</li>
+            </Link>
+          </>
+        )}
       </ul>
     </div>
   );

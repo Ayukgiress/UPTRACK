@@ -1,158 +1,239 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../AuthContext";
+import { Clock, Circle, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import EditTodoModal from "../../Components/Modals/EditTodoModal";
 
-export default function Pending() {
+const Pending = () => {
+  const [pendingTodos, setPendingTodos] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { isAuthenticated, currentUser, currentUserLoading } = useAuth();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentTodo, setCurrentTodo] = useState(null);
+
+  useEffect(() => {
+    fetchPendingTodos();
+  }, [currentUser, isAuthenticated]);
+
+  const fetchPendingTodos = async () => {
+    if (currentUserLoading || !isAuthenticated) {
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `https://ticks-api.onrender.com/todos/api/todos/${currentUser._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const pending = response.data.filter(todo => !todo.completed);
+      setPendingTodos(pending);
+    } catch (error) {
+      console.error("Error fetching pending todos:", error);
+      toast.error("Failed to load pending todos");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const toggleTodoCompletion = async (todo) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const updatedTodo = { ...todo, completed: true };
+
+    try {
+      const response = await axios.put(
+        `https://ticks-api.onrender.com/todos/api/todos/${todo._id}`,
+        updatedTodo,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setPendingTodos((prevTodos) =>
+        prevTodos.filter((t) => t._id !== response.data._id)
+      );
+      toast.success("Todo marked as completed!");
+    } catch (error) {
+      console.error("Error updating todo:", error);
+      toast.error("Failed to update todo");
+    }
+  };
+
+  const handleDeleteTodo = async (todoId) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      await axios.delete(`https://ticks-api.onrender.com/todos/api/todos/${todoId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setPendingTodos((prevTodos) => prevTodos.filter((todo) => todo._id !== todoId));
+      toast.success("Todo deleted successfully!");
+    } catch (error) {
+      console.error("Delete todo error:", error);
+      toast.error("Failed to delete todo");
+    }
+  };
+
+  const handleOpenEditModal = (todo) => {
+    setCurrentTodo(todo);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setCurrentTodo(null);
+    setIsEditModalOpen(false);
+  };
+
+  const editTodo = async (updatedTodo) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await axios.put(
+        `https://ticks-api.onrender.com/todos/api/todos/edit/${updatedTodo._id}`,
+        updatedTodo,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setPendingTodos((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo._id === response.data._id ? response.data : todo
+        )
+      );
+      toast.success("Todo updated successfully!");
+      handleCloseEditModal();
+    } catch (error) {
+      console.error("Error updating todo:", error);
+      toast.error("Failed to update todo");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex justify-center items-center p-8">
+        <p className="text-gray-500">Loading pending todos...</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      
+    <div className="w-full flex flex-col items-center justify-center px-4">
+      <div className="flex items-center justify-between w-full mb-4">
+        <div className="flex items-center gap-3">
+          <Clock className="w-6 h-6 text-yellow-500" />
+          <h1 className="text-2xl font-bold">Pending Tasks</h1>
+        </div>
+        <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">
+          {pendingTodos.length} pending
+        </span>
+      </div>
+
+      <EditTodoModal
+        isOpen={isEditModalOpen}
+        onClose={handleCloseEditModal}
+        todo={currentTodo}
+        onEditTodo={editTodo}
+      />
+
+      <div className="w-full bg-white shadow-lg rounded-lg p-6">
+        {pendingTodos.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            No pending todos
+          </div>
+        ) : (
+          <ul className="space-y-4">
+            {pendingTodos.map((todo) => (
+              <li
+                key={todo._id}
+                className="flex flex-col p-4 rounded-md bg-white border border-gray-200 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center flex-1 gap-3">
+                    <button
+                      onClick={() => toggleTodoCompletion(todo)}
+                      className="focus:outline-none"
+                    >
+                      <Circle className="w-5 h-5 text-gray-400 hover:text-green-500 cursor-pointer" />
+                    </button>
+                    <div className="flex-1">
+                      <span className="font-semibold">
+                        {todo.title}
+                      </span>
+                      {todo.description && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          {todo.description}
+                        </p>
+                      )}
+                      <div className="mt-2 flex flex-wrap gap-2 text-sm">
+                        {todo.priority && (
+                          <span className={`px-2 py-1 rounded-full text-white
+                            ${todo.priority === "high" ? "bg-red-500" : 
+                              todo.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}>
+                            {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}
+                          </span>
+                        )}
+                        {todo.dueDate && (
+                          <span className="px-2 py-1 rounded-lg bg-gray-200 text-gray-700">
+                            Due: {new Date(todo.dueDate).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button 
+                      onClick={() => handleOpenEditModal(todo)} 
+                      className="text-blue-500 hover:text-blue-600 text-sm"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTodo(todo._id)}
+                      className="text-red-500 hover:text-red-600 transition-colors"
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                </div>
+                {todo.subtodos && todo.subtodos.length > 0 && (
+                  <div className="mt-4 ml-8">
+                    <ul className="space-y-2">
+                      {todo.subtodos.map((subtask, index) => (
+                        <li key={index} className="flex items-center gap-2 text-gray-600">
+                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                          <span>{subtask.title}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-
-
-
-// import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import { useParams, useNavigate } from 'react-router-dom';
-// import { toast } from 'sonner';
-// import { useAuth } from '../AuthContext';
-
-// const TodoDetail = () => {
-//     const { id } = useParams(); 
-//     const navigate = useNavigate();
-//     const [todo, setTodo] = useState(null);
-//     const [isLoading, setIsLoading] = useState(true);
-//     const { currentUser, isAuthenticated } = useAuth();
-//     const [isSupervisor, setIsSupervisor] = useState(false);
-  
-//     useEffect(() => {
-//       const fetchTodo = async () => {
-//         if (!isAuthenticated || !currentUser) {
-//           toast.error("Please log in to view this todo");
-//           navigate('/login');
-//           return;
-//         }
-
-//         const token = localStorage.getItem("token");
-//         if (!token) {
-//           toast.error("Authentication token missing");
-//           navigate('/login');
-//           return;
-//         }
-
-//         try {
-//             const response = await axios.get(`https://ticks-api.onrender.com/api/todos/detail/${id}`, {
-//                 headers: {
-//                   'Authorization': `Bearer ${token}`,
-//                   'Content-Type': 'application/json'
-//                 },
-//             });
-          
-//             setTodo(response.data);
-//             // Check if the current user is the supervisor (assigned to them)
-//             setIsSupervisor(response.data.assignedTo === currentUser.email);
-//         } catch (error) {
-//             console.error("Detailed Fetch Error:", error);
-//             toast.error(error.response?.data?.error || "Failed to load todo");
-//             navigate('/dashboard');
-//         } finally {
-//             setIsLoading(false);
-//         }
-//       };
-  
-//       fetchTodo();
-//     }, [id, currentUser, isAuthenticated, navigate]);
-
-//     const handleStatusUpdate = async (completed) => {
-//         const token = localStorage.getItem("token");
-//         try {
-//             const response = await axios.put(
-//                 `https://ticks-api.onrender.com/api/todos/${id}`,
-//                 { completed },
-//                 {
-//                     headers: {
-//                         'Authorization': `Bearer ${token}`,
-//                         'Content-Type': 'application/json'
-//                     },
-//                 }
-//             );
-//             setTodo(response.data);
-//             toast.success(`Todo marked as ${completed ? 'completed' : 'pending'}`);
-//         } catch (error) {
-//             toast.error("Failed to update todo status");
-//         }
-//     };
-  
-//     if (isLoading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
-//     if (!todo) return <div className="flex justify-center items-center h-screen">Todo not found.</div>;
-  
-//     return (
-//         <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-//             <h2 className="text-3xl font-bold mb-4">{todo.title}</h2>
-//             <div className="bg-gray-50 p-4 rounded-lg mb-4">
-//                 <p className="text-gray-700">{todo.description}</p>
-//             </div>
-            
-//             {todo.subtodos?.length > 0 && (
-//                 <div className="mb-4">
-//                     <h3 className="text-xl font-semibold mb-2">Subtasks:</h3>
-//                     <ul className="list-disc pl-6">
-//                         {todo.subtodos.map((subtask, index) => (
-//                             <li key={index} className="mb-1">{subtask.title}</li>
-//                         ))}
-//                     </ul>
-//                 </div>
-//             )}
-            
-//             <div className="grid grid-cols-2 gap-4 mb-4">
-//                 <div className="bg-gray-50 p-3 rounded">
-//                     <p className="font-semibold">Priority:</p>
-//                     <span className={`inline-block px-2 py-1 rounded ${
-//                         todo.priority === 'high' ? 'bg-red-100 text-red-800' :
-//                         todo.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-//                         'bg-green-100 text-green-800'
-//                     }`}>
-//                         {todo.priority}
-//                     </span>
-//                 </div>
-//                 <div className="bg-gray-50 p-3 rounded">
-//                     <p className="font-semibold">Due Date:</p>
-//                     <p>{new Date(todo.dueDate).toLocaleDateString()}</p>
-//                 </div>
-//             </div>
-            
-//             <div className="flex justify-between items-center">
-//                 <div>
-//                     <p className="font-semibold">Status:</p>
-//                     <span className={`inline-block px-2 py-1 rounded ${
-//                         todo.completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-//                     }`}>
-//                         {todo.completed ? "Completed" : "Pending"}
-//                     </span>
-//                 </div>
-                
-//                 {(isSupervisor || todo.userId === currentUser.id) && (
-//                     <button
-//                         onClick={() => handleStatusUpdate(!todo.completed)}
-//                         className={`px-4 py-2 rounded ${
-//                             todo.completed 
-//                                 ? 'bg-yellow-500 hover:bg-yellow-600' 
-//                                 : 'bg-green-500 hover:bg-green-600'
-//                         } text-white`}
-//                     >
-//                         Mark as {todo.completed ? 'Pending' : 'Completed'}
-//                     </button>
-//                 )}
-//             </div>
-            
-//             {todo.assignedTo && (
-//                 <div className="mt-4 bg-gray-50 p-3 rounded">
-//                     <p className="font-semibold">Assigned To:</p>
-//                     <p>{todo.assignedTo}</p>
-//                 </div>
-//             )}
-//         </div>
-//     );
-// };
-
-// export default TodoDetail;
+export default Pending;

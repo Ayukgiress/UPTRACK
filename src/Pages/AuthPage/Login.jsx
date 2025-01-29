@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { useAuth } from "../AuthContext";
 import { Link } from "react-router-dom";
 import GoogleAuth from "../../Components/GoogleAuth";
-// import API_URL from "../Constants/Constants";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
