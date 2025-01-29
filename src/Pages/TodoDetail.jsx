@@ -22,6 +22,8 @@ const SupervisorTodoView = () => {
             }
 
             try {
+                console.log(`Fetching todo ${id} for supervisor ${supervisorEmail.toLowerCase()}`);
+                
                 const response = await axios.get(
                     `https://ticks-api.onrender.com/api/todos/supervisor/${id}`,
                     { 
@@ -34,20 +36,29 @@ const SupervisorTodoView = () => {
                 );
                 
                 if (response.data) {
+                    console.log('Todo fetched successfully:', response.data);
                     setTodo(response.data);
                     setError(null);
+                    toast.success("Todo loaded successfully");
                 } else {
+                    console.error('Empty response received');
                     setError("Todo not found");
                     toast.error("Todo not found");
                 }
             } catch (error) {
+                console.error("Full error object:", error);
                 const errorMessage = error.response?.data?.error || "Failed to load todo";
+                const debugInfo = error.response?.data?.debugInfo;
+                
+                if (debugInfo) {
+                    console.log("Debug info received:", debugInfo);
+                }
+                
                 setError(errorMessage);
-                console.error("Error fetching todo:", error);
                 toast.error(errorMessage);
                 
-                // If unauthorized or not found, redirect after a delay
                 if (error.response?.status === 401 || error.response?.status === 404) {
+                    toast.error("You'll be redirected to the home page in 3 seconds");
                     setTimeout(() => navigate('/'), 3000);
                 }
             } finally {
@@ -58,7 +69,6 @@ const SupervisorTodoView = () => {
         fetchTodo();
     }, [id, supervisorEmail, navigate]);
 
-    // ... keep existing handleMarkComplete function and rendering logic ...
 
     const handleMarkComplete = async () => {
         if (!todo) return;
