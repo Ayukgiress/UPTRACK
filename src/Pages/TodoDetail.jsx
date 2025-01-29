@@ -75,96 +75,98 @@ const TodoDetail = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold">{todo.title}</h1>
-            {todo.description && (
-              <p className="text-gray-600 mt-2">{todo.description}</p>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="max-w-2xl w-full p-4">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold">{todo.title}</h1>
+              {todo.description && (
+                <p className="text-gray-600 mt-2">{todo.description}</p>
+              )}
+            </div>
+            {!todo.completed && (
+              <button
+                onClick={handleComplete}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+              >
+                Mark Complete
+              </button>
             )}
           </div>
-          {!todo.completed && (
-            <button
-              onClick={handleComplete}
-              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
-            >
-              Mark Complete
-            </button>
-          )}
-        </div>
 
-        <div className="flex gap-4 text-sm text-gray-500 mb-6">
-          {todo.priority && (
-            <span className={`px-2 py-1 rounded-full text-white 
-              ${todo.priority === "high" ? "bg-red-500" : 
-                todo.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}>
-              {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}
-            </span>
-          )}
-          {todo.dueDate && (
-            <span className="flex items-center gap-1">
-              <Clock size={16} />
-              Due: {new Date(todo.dueDate).toLocaleDateString()}
-            </span>
-          )}
-        </div>
-
-        {todo.subtodos?.length > 0 && (
-          <div className="mb-6">
-            <h2 className="font-semibold mb-2">Subtasks:</h2>
-            <ul className="space-y-2">
-              {todo.subtodos.map((subtask, index) => (
-                <li key={index} className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                  <span>{subtask.title}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="flex gap-4 text-sm text-gray-500 mb-6">
+            {todo.priority && (
+              <span className={`px-2 py-1 rounded-full text-white 
+                ${todo.priority === "high" ? "bg-red-500" : 
+                  todo.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}>
+                {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}
+              </span>
+            )}
+            {todo.dueDate && (
+              <span className="flex items-center gap-1">
+                <Clock size={16} />
+                Due: {new Date(todo.dueDate).toLocaleDateString()}
+              </span>
+            )}
           </div>
-        )}
 
-        <div className="border-t pt-4">
-          <h2 className="font-semibold flex items-center gap-2 mb-4">
-            <MessageSquare size={18} />
-            Comments
-          </h2>
-          
-          <div className="space-y-4 mb-4">
-            {todo.comments?.map((comment, index) => (
-              <div key={index} className="bg-gray-50 p-3 rounded">
-                <div className="flex justify-between text-sm text-gray-500">
-                  <span>{comment.author}</span>
-                  <span>{new Date(comment.createdAt).toLocaleString()}</span>
+          {todo.subtodos?.length > 0 && (
+            <div className="mb-6">
+              <h2 className="font-semibold mb-2">Subtasks:</h2>
+              <ul className="space-y-2">
+                {todo.subtodos.map((subtask, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                    <span>{subtask.title}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="border-t pt-4">
+            <h2 className="font-semibold flex items-center gap-2 mb-4">
+              <MessageSquare size={18} />
+              Comments
+            </h2>
+            
+            <div className="space-y-4 mb-4">
+              {todo.comments?.map((comment, index) => (
+                <div key={index} className="bg-gray-50 p-3 rounded">
+                  <div className="flex justify-between text-sm text-gray-500">
+                    <span>{comment.author}</span>
+                    <span>{new Date(comment.createdAt).toLocaleString()}</span>
+                  </div>
+                  <p className="mt-1">{comment.text}</p>
                 </div>
-                <p className="mt-1">{comment.text}</p>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="flex-1 border rounded-lg px-3 py-2"
+              />
+              <button
+                onClick={handleAddComment}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+              >
+                Comment
+              </button>
+            </div>
           </div>
 
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Add a comment..."
-              className="flex-1 border rounded-lg px-3 py-2"
-            />
-            <button
-              onClick={handleAddComment}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-            >
-              Comment
-            </button>
-          </div>
+          {todo.completed && (
+            <div className="mt-4 text-sm text-green-600 flex items-center gap-2">
+              <CheckCircle size={16} />
+              Completed by {todo.completedBy} on {new Date(todo.completedAt).toLocaleString()}
+            </div>
+          )}
         </div>
-
-        {todo.completed && (
-          <div className="mt-4 text-sm text-green-600 flex items-center gap-2">
-            <CheckCircle size={16} />
-            Completed by {todo.completedBy} on {new Date(todo.completedAt).toLocaleString()}
-          </div>
-        )}
       </div>
     </div>
   );
