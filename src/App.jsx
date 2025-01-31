@@ -24,6 +24,8 @@ import Overview from './Pages/DashboardOutlets/Overview'
 import Settings from './Pages/DashboardOutlets/Settings'
 import TodoDetail from './Pages/TodoDetail'
 import Charts from './Pages/DashboardOutlets/Charts'
+import PasswordReset from './Pages/Password/ResetToken'
+import PasswordResetRequest from './Pages/Password/ResetPassword'
 
 
 function App() {
@@ -41,6 +43,8 @@ function App() {
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/oauth-callback" element={<OauthCallback />} />
           <Route path="/supervisor/todos/:id" element={<TodoDetail />} />
+          <Route path="/reset-password/:token" element={<PasswordReset />} />
+          <Route path="/password" element={<PasswordResetRequest/>} />
              <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<Overview />} />
             <Route path="settings" element={<Settings />} />

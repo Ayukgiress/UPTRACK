@@ -2,7 +2,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <div className="flex flex-col sm:flex-row justify-around text-base gap-4 sm:gap-6 xl:gap-[30rem] items-center bg-white text-black shadow-sm xl:px-[12rem] xl:h-40 h-32 w-full px-4 py-6 sm:py-4 mt-auto 3xl:h-60">
+    <div className="flex flex-col items-start md:flex-row justify-around text-base gap-4 sm:gap-6 xl:gap-[30rem]  bg-white text-black shadow-sm xl:px-[12rem] xl:h-40 h-32 w-full px-4 py-6 sm:py-4 mt-auto 3xl:h-60">
       <div className="flex flex-col items-start gap-4 justify-start text-center sm:text-left">
         <div className="flex items-start justify-start gap-2">
           <img
@@ -11,14 +11,14 @@ const Footer = () => {
             className="w-24 h-[4rem] rounded-md p-2"
           />
         </div>
-        <div>
+        <div className='text-start'>
           <h1 className="text-sm sm:text-base 3xl:text-3xl">
             In for all the haul, this is the best and most customizable platform for you
           </h1>
         </div>
       </div>
 
-      <div className="flex flex-col items-start gap-2 justify-start text-center sm:text-left">
+      <div className="flex flex-col items-start gap-2 justify-start  sm:text-left">
         <h1 className="text-lg 3xl:text-3xl">Contact</h1>
         <div>
           <h1 className="text-sm sm:text-base 3xl:text-2xl">Yaoundé, Jouvence</h1>

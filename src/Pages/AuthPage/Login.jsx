@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useAuth } from "../AuthContext";
 import { Link } from "react-router-dom";
 import GoogleAuth from "../../Components/GoogleAuth";
+import ForgotPass from "../../Components/PasswordReset/ForgotPassword";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -95,12 +96,16 @@ const Login = () => {
               </div>
 
               <div>
+                <div className="flex justify-between">
                 <label
                   htmlFor="password"
                   className="block text-sm font-medium text-gray-900 mb-2 3xl:text-xl"
                 >
                   Password
                 </label>
+                <ForgotPass />
+                </div>
+               
                 <div className="relative">
                   <input
                     {...register("password", {
