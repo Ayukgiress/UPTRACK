@@ -59,7 +59,6 @@ const Login = () => {
 
   return (
     <div>
-      <Narbar />
       <section className="bg-custom-first min-h-screen flex items-center justify-center bg-custom-gradient">
         <div className="flex flex-col lg:flex-row w-full max-w-7xl px-6 py-8 gap-12 lg:gap-24 3xl:max-w-[120rem] 3xl:px-16">
           <div className="flex flex-col justify-center items-start w-full lg:w-1/2">
@@ -151,7 +150,6 @@ const Login = () => {
           </div>
         </div>
       </section>
-      <Footer />
     </div>
   );
 };

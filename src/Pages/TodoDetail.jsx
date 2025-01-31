@@ -19,7 +19,7 @@ const TodoDetail = () => {
   const fetchTodo = async () => {
     try {
       const response = await axios.get(
-        `https://ticks-api.onrender.com/supervisor/api/public-todos/${id}?email=${encodeURIComponent(email)}`
+        `https://ticks-api.onrender.com/todos/api/public-todos/${id}?email=${encodeURIComponent(email)}`
       );
       setTodo(response.data);
     } catch (error) {
@@ -35,7 +35,7 @@ const TodoDetail = () => {
 
     try {
       const response = await axios.post(
-        `https://ticks-api.onrender.com/supervisor/api/public-todos/${id}/comment`,
+        `https://ticks-api.onrender.com/todos/api/public-todos/${id}/comment`,
         {
           text: newComment,
           email: email
@@ -54,7 +54,7 @@ const TodoDetail = () => {
   const handleComplete = async () => {
     try {
       const response = await axios.put(
-        `https://ticks-api.onrender.com/supervisor/api/public-todos/${id}/complete`,
+        `https://ticks-api.onrender.com/todos/api/public-todos/${id}/complete`,
         { email }
       );
 

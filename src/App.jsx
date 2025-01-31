@@ -23,6 +23,7 @@ import Completed from './Pages/DashboardOutlets/Completed'
 import Overview from './Pages/DashboardOutlets/Overview'
 import Settings from './Pages/DashboardOutlets/Settings'
 import TodoDetail from './Pages/TodoDetail'
+import Charts from './Pages/DashboardOutlets/Charts'
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             <Route path="settings" element={<Settings />} />
             <Route path="pending" element={<Pending />} />
             <Route path="completed" element={<Completed />} />
+             <Route path="charts" element={<Charts />} />
 
           </Route>
         </Routes>

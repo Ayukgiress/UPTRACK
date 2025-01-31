@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, Clock, CheckCircle, Settings, Grid } from 'lucide-react'; 
+import { Menu, X, Home, Clock, CheckCircle, Settings, Grid, MessageCircleMore } from 'lucide-react'; 
 import Profile from './Profile';
+
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -28,7 +29,7 @@ const Sidebar = () => {
     { icon: Grid, text: 'Overview', path: '/dashboard' },  
     { icon: Clock, text: 'Pending Todos', path: '/dashboard/pending' },
     { icon: CheckCircle, text: 'Completed', path: '/dashboard/completed' },
-    // { icon: Settings, text: 'Settings', path: '/dashboard/settings' }
+    { icon: MessageCircleMore, text: 'Chats', path: '/dashboard/charts' }
     
   ];
 
