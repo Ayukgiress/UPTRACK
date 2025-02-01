@@ -12,26 +12,40 @@ export const useChatStore = create((set) => ({
     getUsers: async () => {
         set({ isUsersLoading: true })
         try {
-            const res = await axiosInstance.get('/message/users')
-            set({ users: res.data })
+            const token = localStorage.getItem('token');  
+
+            const res = await axiosInstance.get('/message/users', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            set({ users: res.data });
         } catch (error) {
-            toast.error('failure')
+            toast.error('failure');
         } finally {
-            set({ isUsersLoading: false })
+            set({ isUsersLoading: false });
         }
     },
 
     getMessages: async (userId) => {
-        set({ isMessagesLoading: true })
+        set({ isMessagesLoading: true });
         try {
-            const res = await axiosInstance.get(`/messages/${userId}`)
-            set({ message: res.data })
+            const token = localStorage.getItem('token'); 
+
+            const res = await axiosInstance.get(`/messages/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            set({ message: res.data });
         } catch (error) {
-            toast.error("failure to get messages")
+            toast.error("failure to get messages");
         } finally {
-            set({ isMessagesLoading: false })
+            set({ isMessagesLoading: false });
         }
     },
 
     setSelectedUser: (selectedUser) => set({ selectedUser }),
-}))
+}));
