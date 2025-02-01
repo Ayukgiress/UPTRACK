@@ -1,9 +1,6 @@
-// import create from 'zustand'
+import { create } from 'zustand';
 import { toast } from "sonner";
 import { axiosInstance } from "../../lib/axois";
-
-
-
 
 export const useChatStore = create((set) => ({
     message: [],
@@ -12,33 +9,29 @@ export const useChatStore = create((set) => ({
     isUsersLoading: false,
     isMessagesLoading: false,
 
-
     getUsers: async () => {
-        set({ isUsersLoading: true})
+        set({ isUsersLoading: true })
         try {
             const res = await axiosInstance.get('/messages/users')
-            set({ users: res.data})
+            set({ users: res.data })
         } catch (error) {
-             toast.error('failure')
+            toast.error('failure')
         } finally {
-            set({ isUsersLoading: false})
+            set({ isUsersLoading: false })
         }
     },
 
-
     getMessages: async (userId) => {
-        set({ isMessagesLoading: true})
+        set({ isMessagesLoading: true })
         try {
             const res = await axiosInstance.get(`/messages/${userId}`)
-            set({ message: res.data})
+            set({ message: res.data })
         } catch (error) {
             toast.error("failure to get messages")
-
         } finally {
             set({ isMessagesLoading: false })
         }
     },
-    
-    setSelectedUser: (selectedUser) => set({ selectedUser}),
-})
-)
+
+    setSelectedUser: (selectedUser) => set({ selectedUser }),
+}))
