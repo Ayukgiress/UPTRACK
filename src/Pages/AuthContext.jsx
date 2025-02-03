@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserLoading, setCurrentUserLoading] = useState(true);
   const [refetchCurrentUser, setRefetchCurrentUser] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState([]); 
 
   const isAuthenticated = Boolean(currentUser) && !currentUserLoading;
 
@@ -23,6 +24,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("refreshToken");
     setCurrentUser(null);
     setCurrentUserLoading(false);
+    setOnlineUsers([]); 
   };
 
   const fetchCurrentUser = async (token) => {
@@ -44,9 +46,8 @@ export const AuthProvider = ({ children }) => {
       const userData = await response.json();
       console.log('Received user data:', userData);
   
-      // Ensure that userData has a 'data' field and is valid
       if (userData && userData.success && userData.data && userData.data._id) {
-        setCurrentUser(userData.data); // Use the nested 'data' field
+        setCurrentUser(userData.data); 
       } else {
         console.error('Invalid user data format:', userData);
         throw new Error("Invalid user data received");
@@ -58,8 +59,7 @@ export const AuthProvider = ({ children }) => {
       setCurrentUserLoading(false);
     }
   };
-  
-  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     console.log('Initial token check:', Boolean(token));
@@ -79,7 +79,9 @@ export const AuthProvider = ({ children }) => {
       currentUser,
       setCurrentUser,
       currentUserLoading,
-      setRefetchCurrentUser
+      setRefetchCurrentUser,
+      onlineUsers, 
+      setOnlineUsers, 
     }}>
       {children}
     </AuthContext.Provider>
