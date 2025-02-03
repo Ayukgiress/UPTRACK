@@ -1,6 +1,6 @@
 import React from 'react';
 import { useChatStore } from './Store/useChatStore';
-import { useAuth } from './Store/AuthContext';
+import { useAuth } from '../Pages/AuthContext';
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
