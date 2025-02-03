@@ -4,7 +4,7 @@ import { useChatStore } from './Store/useChatStore';
 import SidebarSkeleton from './Skeletons/SidebarSkeleton';
 
 export default function ChatSideBar() {
-  const { getUsers, users, selectedUser, isUsersLoading } = useChatStore();
+  const { getUsers, users, selectedUser, isUsersLoading, onlineUsers } = useChatStore(); // Access onlineUsers from useChatStore
 
   useEffect(() => {
     getUsers();
@@ -17,22 +17,24 @@ export default function ChatSideBar() {
       <div className="border-b border-base-300 w-full p-5">
         <div className="flex items-center gap-2">
           <Users className="size-6" />
-          <span className="font-medium hidden lg:block">Container</span>
+          <span className="font-medium hidden lg:block">Contacts</span>
         </div>
       </div>
-      
+
       <div className="overflow-y-auto w-full py-3">
         {users.map((user) => (
           <button
             key={user.id}
             className={`w-full p-3 flex items-center gap-3 hover:bg-base-200 transition-colors
-              ${selectedUser?.id === user.id ? 'bg-base-200' : ''}`}
+              ${selectedUser?.id === user.id ? 'bg-blue-600' : ''}`}
           >
-            {/* Add user content here, for example: */}
             <div className="w-10 h-10 rounded-full bg-base-300" />
             <div className="hidden lg:block">
               <p className="font-medium">{user.name}</p>
               <p className="text-sm text-base-content/70">{user.status}</p>
+              <div className="text-sm text-black">
+                {onlineUsers.includes(user._id) ? 'online' : 'offline'}
+              </div>
             </div>
           </button>
         ))}

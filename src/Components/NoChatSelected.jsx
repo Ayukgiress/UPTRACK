@@ -16,9 +16,9 @@ export default function NoChatSelected() {
             </div>
          </div>
 
-         <h2 className='text-2xl font-bold'>Welcome to Chart</h2>
+         <h2 className='text-2xl font-bold'>Welcome to Chat</h2>
          <p className='text-base'>
-          select a conversation from sidebar to start charting
+          select a conversation from sidebar to start chating
          </p>
       </div>
     </div>
