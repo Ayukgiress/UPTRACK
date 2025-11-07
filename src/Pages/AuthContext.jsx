@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-// import API_URL from '../Constants/Constants';
+import { io } from 'socket.io-client';
+import { API_BASE_URL } from '../lib/constants.js';
 
 const AuthContext = createContext();
 
@@ -15,7 +16,8 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserLoading, setCurrentUserLoading] = useState(true);
   const [refetchCurrentUser, setRefetchCurrentUser] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState([]); 
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [socket, setSocket] = useState(null);
 
   const isAuthenticated = Boolean(currentUser) && !currentUserLoading;
 
@@ -24,18 +26,23 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("refreshToken");
     setCurrentUser(null);
     setCurrentUserLoading(false);
-    setOnlineUsers([]); 
+    setOnlineUsers([]);
+    if (socket) {
+      socket.disconnect();
+      setSocket(null);
+    }
   };
 
   const fetchCurrentUser = async (token) => {
     try {
       console.log('Fetching current user with token:', token);
       
-      const response = await fetch(`https://ticks-api.onrender.com/users/current-user`, {
+      const response = await fetch(`${API_BASE_URL}/users/current-user`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+        credentials: 'include'
       });
   
       if (!response.ok) {
@@ -47,7 +54,32 @@ export const AuthProvider = ({ children }) => {
       console.log('Received user data:', userData);
   
       if (userData && userData.success && userData.data && userData.data._id) {
-        setCurrentUser(userData.data); 
+        setCurrentUser(userData.data);
+
+        // Connect to socket after successful login
+        const newSocket = io(API_BASE_URL, {
+          auth: {
+            token: token
+          }
+        });
+
+        newSocket.on('connect', () => {
+          console.log('Connected to socket server');
+          newSocket.emit('join', userData.data._id);
+        });
+
+        newSocket.on('disconnect', () => {
+          console.log('Disconnected from socket server');
+        });
+
+        newSocket.on('getOnlineUsers', (onlineUserIds) => {
+          console.log('Received online users:', onlineUserIds);
+          // Filter out the current user from online users
+          const filteredOnlineUsers = onlineUserIds.filter(id => id !== userData.data._id);
+          setOnlineUsers(filteredOnlineUsers);
+        });
+
+        setSocket(newSocket);
       } else {
         console.error('Invalid user data format:', userData);
         throw new Error("Invalid user data received");
@@ -80,8 +112,9 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser,
       currentUserLoading,
       setRefetchCurrentUser,
-      onlineUsers, 
-      setOnlineUsers, 
+      onlineUsers,
+      setOnlineUsers,
+      socket,
     }}>
       {children}
     </AuthContext.Provider>

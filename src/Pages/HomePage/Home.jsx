@@ -2,59 +2,111 @@ import React, { useEffect, useState } from "react";
 import Narbar from "../../Components/Narbar";
 import Footer from "../../Components/Footer";
 import { Link } from "react-router-dom";
-import { 
-  Users, 
-  CheckSquare, 
-  Download, 
-  Award, 
-  Star, 
-  Heart, 
-  TrendingUp, 
-  Shield, 
-  Clock 
+import {
+  Users,
+  CheckSquare,
+  Download,
+  Award,
+  Star,
+  Heart,
+  TrendingUp,
+  Shield,
+  Clock,
+  ArrowRight,
+  Sparkles,
+  Zap,
+  Target,
+  Calendar,
+  BarChart3,
+  Smartphone,
+  Globe,
+  CheckCircle,
+  Play,
+  ChevronDown,
+  MessageSquare,
+  ThumbsUp,
+  Award as AwardIcon,
+  Plus,
+  MapPin,
+  Phone,
+  Mail
 } from "lucide-react";
 
 const Home = () => {
   const statsData = [
-    { 
-      text: "Active Users", 
-      value: "100+", 
-      icon: Users, 
+    {
+      text: "Active Users",
+      value: "100+",
+      icon: Users,
       color: "bg-blue-500",
       description: "Growing community of dedicated users"
     },
-    { 
-      text: "Tasks Completed", 
-      value: "1000+", 
-      icon: CheckSquare, 
+    {
+      text: "Tasks Completed",
+      value: "1000+",
+      icon: CheckSquare,
       color: "bg-green-500",
       description: "Tasks successfully managed and completed"
     },
-    { 
-      text: "Total Downloads", 
-      value: "100+", 
-      icon: Download, 
-      color: "bg-purple-500",
-      description: "App installations across platforms"
-    },
-    { 
-      text: "User Rating", 
-      value: "4.9", 
-      icon: Star, 
+    // {
+    //   text: "Total Downloads",
+    //   value: "100+",
+    //   icon: Download,
+    //   color: "bg-purple-500",
+    //   description: "App installations across platforms"
+    // },
+    {
+      text: "User Rating",
+      value: "4.9",
+      icon: Star,
       color: "bg-yellow-500",
       description: "Average user satisfaction score"
     },
-    { 
-      text: "Years of Trust", 
-      value: "5+", 
-      icon: Shield, 
+    {
+      text: "Years of Trust",
+      value: "1+",
+      icon: Shield,
       color: "bg-red-500",
       description: "Years of reliable service"
     }
   ];
 
+  const features = [
+    {
+      icon: Target,
+      title: "Goal Setting",
+      description: "Set clear objectives and track your progress with smart goal management."
+    },
+    {
+      icon: Calendar,
+      title: "Smart Scheduling",
+      description: "Organize your time efficiently with intelligent scheduling features."
+    },
+    {
+      icon: BarChart3,
+      title: "Progress Analytics",
+      description: "Visualize your productivity with detailed analytics and insights."
+    },
+    {
+      icon: Smartphone,
+      title: "Cross-Platform Sync",
+      description: "Access your tasks anywhere with seamless cross-device synchronization."
+    },
+    {
+      icon: Globe,
+      title: "Collaboration",
+      description: "Work together with team members on shared projects and tasks."
+    },
+    {
+      icon: Zap,
+      title: "Quick Actions",
+      description: "Perform common tasks with lightning-fast shortcuts and automation."
+    }
+  ];
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState({});
+  const [animatedStats, setAnimatedStats] = useState({});
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -68,6 +120,26 @@ const Home = () => {
             ...prev,
             [entry.target.id]: entry.isIntersecting
           }));
+
+          // Animate stats when visible
+          if (entry.isIntersecting && entry.target.id === 'stats-section') {
+            statsData.forEach((stat, index) => {
+              const targetValue = parseInt(stat.value.replace('+', ''));
+              let currentValue = 0;
+              const increment = targetValue / 50;
+              const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= targetValue) {
+                  currentValue = targetValue;
+                  clearInterval(timer);
+                }
+                setAnimatedStats(prev => ({
+                  ...prev,
+                  [index]: Math.floor(currentValue)
+                }));
+              }, 30);
+            });
+          }
         });
       },
       { threshold: 0.1 }
@@ -84,203 +156,516 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="bg-custom-gradient min-h-screen flex flex-col justify-center items-center w-full xl:w-[95rem] 2xl:w-full 3xl:w-full">
+    <div className="min-h-screen bg-white">
       <Narbar />
-      <div className="bg-custom-gradient flex flex-col justify-center items-center w-full">
-        <div className="flex flex-col items-center justify-center p-6 md:p-10 lg:p-24 xl:p-28 3xl:p-64 h-screen">
-          <h1 className="text-black text-center p-10 text-xl font-bold md:text-3xl lg:text-5xl xl:text-7xl 3xl:text-9xl">
-            It's All About Getting It Done, Stay <span className="text-yellow-500">Organized,</span> Stay <span className="text-yellow-500">Creative </span>
-          </h1>
-          <h2 className="flex items-center justify-center text-center font-normal text-base md:text-xl lg:text-2xl xl:text-3xl 3xl:text-5xl">
-            Not organized? Join millions of people to capture ideas, <br /> organize tasks, and do something creative.
-          </h2>
-          <button className="relative flex h-12 w-40 items-center justify-center overflow-hidden bg-blue-800 text-white shadow-2xl transition-all 2xl:text-2xl 2xl:w-80 rounded-3xl 3xl:h-28 3xl:w-[38rem] 3xl:text-5xl 2xl:mt-12">
-            <span className="relative z-10">
-              <Link to='/register'>Get Started</Link>
-            </span>
-          </button>
+
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-gray-50">
+        {/* Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-gray-200/30 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-gray-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gray-100/20 rounded-full blur-3xl"></div>
         </div>
 
-        <div className="w-full flex justify-center items-center mt-40" id="todo-section" data-animate>
-          <div className={`flex flex-col md:flex-row justify-around items-center xl:w-[90rem] bg-yellow-50 shadow-custom-background text-black relative shadow-xl font-mono w-full p-6 transition-all duration-1000 ${
-            isVisible['todo-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}>
-            <div className="flex items-start justify-start flex-col p-10 gap-5 xl:mt-28 ">
-              <h1 className="text-blue-500 xl:text-2xl 3xl:text-3xl">Todo List</h1>
-              <h2 className="font-bold text-lg md:text-2xl xl:text-5xl 3xl:text-6xl">
-                Organize everything in <br /> your life
-              </h2>
-              <p className="font-light md:text-xl 3xl:text-4xl xl:text-xl">
-                Whether it's work projects, personal tasks, or study <br /> plans,
-                Uptrack helps you organize and confidently tackle everything in your life.
-              </p>
-            </div>
-            <div className="flex flex-row justify-around items-center w-full md:w-1/2 h-full">
-              <div className="flex-1 flex justify-center md:justify-start relative">
-                <img 
-                  src="/images/Screenshot from 2025-01-17 21-34-04.png" 
-                  alt="Todo" 
-                  className="w-full h-auto max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 3xl:max-w-3xl transition-transform duration-300 hover:scale-105" 
-                />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="text-center lg:text-left">
+              {/* Badge */}
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 text-gray-700 text-sm font-medium mb-8 border border-gray-200">
+                <Sparkles className="w-4 h-4 mr-2 text-gray-600" />
+                Smart Task Management Platform
               </div>
-              <div className="flex-1 flex justify-center md:justify-end relative mt-4 md:mt-0">
-                <img 
-                  src="/images/Screenshot from 2025-01-17 21-31-56.png" 
-                  alt="Todo" 
-                  className="w-full h-auto max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 3xl:max-w-3xl hover:w-80 transition-all duration-300 hover:scale-105" 
-                />
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div className="xl:mt-40 h-full xl:h-[50rem] bg-white flex items-center justify-around gap-8 p-8 w-full" id="tutorial-section" data-animate>
-          <div className={`flex flex-col items-start justify-start max-w-xl space-y-6 transition-all duration-1000 ${
-            isVisible['tutorial-section'] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
-          }`}>
-            <div className="space-y-24 3xl:space-y-28">
-              <h1 className="text-3xl font-bold 3xl:text-5xl">
-                Don't Know How to Get Started <span className="text-yellow-500">?</span>
+              {/* Main Heading */}
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight text-gray-900">
+                <span className="block">Complete Tasks,</span>
+                <span className="block text-gray-700">
+                  Get Verified
+                </span>
               </h1>
-              <p className="text-lg md:text-xl 3xl:text-3xl">
-                Just simply follow the tutorial beside and get full <br />  functionality 
-                of our web app and become a pro  <br /> in managing and organizing
-                your to-dos, <br />so you become efficient and productive.
-              </p>
-            </div>
-          </div>
 
-          <div 
-            className={`flex justify-center items-center w-full xl:w-[45rem] 3xl:h-[40rem] xl:h-[30rem] bg-gray-200 rounded-xl shadow-xl overflow-hidden transition-all duration-1000 ${
-              isVisible['tutorial-section'] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
-            }`}
-          >
-            <video 
-              src="/images/Screencast from 2025-01-20 23-09-56.webm" 
-              className="w-full h-full object-cover" 
-              controls 
-              preload="metadata"
-            />
-          </div>
-        </div>
-
-        <div className="w-full p-8 mt-18 h-lvh" id="stats-section" data-animate>
-          <div className={`max-w-7xl mx-auto transition-all duration-1000 ${
-            isVisible['stats-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}>
-            <div className="text-center mt-44 3xl:mt-[28rem]">
-              <h2 className="text-2xl font-bold text-blue-500 mb-2 3xl:text-4xl">In it for the long haul</h2>
-              <h3 className="text-3xl font-bold mb-4 3xl:text-5xl">A todo web app you can trust for life</h3>
-              <p className="text-gray-600 3xl:text-2xl">
-                We've been building and improving our platform for years. Rest assured that we'll never sell out to the highest bidder.
+              {/* Subheading */}
+              <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl leading-relaxed">
+                Transform your productivity with intelligent task tracking. Assign reviewers, track completion, and build accountability in your workflow.
               </p>
-            </div>
-            
-            <div className="flex items-center justify-center gap-4 flex-wrap  w-full">
-              {statsData.map((stat, index) => (
-                <div
-                  key={index}
-                  className={`relative flex items-center justify-center bg-white rounded-xl p-6 shadow-lg transition-all duration-500 transform hover:-translate-y-2 hover:shadow-xl w-full sm:w-[250px] md:w-[300px] lg:w-[140px] xl:w-[243px] 3xl:w-[390px] 3xl:gap-86 ${
-                    currentIndex === index ? 'scale-105' : 'scale-100'
-                  }`}
-                >
-                  <div className="3xl:mt-20">
-                    <div className={`${stat.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-transform duration-300 hover:rotate-12`}>
-                      <stat.icon className="text-white" size={32} strokeWidth={1.5} />
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start items-center mb-16">
+                <Link to='/register'>
+                  <button className="group relative px-8 py-4 bg-gray-900 text-white font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 overflow-hidden min-w-[200px]">
+                    <span className="relative z-10 flex items-center justify-center gap-3">
+                      Start Managing Tasks
+                      <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" size={20} />
+                    </span>
+                    <div className="absolute inset-0 bg-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"></div>
+                  </button>
+                </Link>
+
+                <button className="group px-8 py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-full hover:border-gray-900 hover:text-gray-900 hover:bg-gray-50 transition-all duration-300 flex items-center justify-center gap-3 min-w-[200px]">
+                  <Play className="transition-transform duration-300 group-hover:scale-110" size={20} />
+                  Watch Demo
+                </button>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8 text-sm text-gray-500">
+                <div className="flex items-center gap-2">
+                  <div className="flex -space-x-2">
+                    <div className="w-8 h-8 bg-gray-300 rounded-full border-2 border-white"></div>
+                    <div className="w-8 h-8 bg-gray-400 rounded-full border-2 border-white"></div>
+                    <div className="w-8 h-8 bg-gray-500 rounded-full border-2 border-white"></div>
+                    <div className="w-8 h-8 bg-gray-600 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">
+                      +
                     </div>
-                    <div className="text-center">
-                      <h4 className="text-xl font-bold text-gray-800 mb-1  3xl:text-3xl">{stat.value}</h4>
-                      <p className="text-lg font-semibold text-gray-700 mb-2 3xl:text-2xl">{stat.text}</p>
-                      <p className="text-sm text-gray-600">{stat.description}</p>
+                  </div>
+                  <span>10,000+ active users</span>
+                </div>
+                {/* <div className="flex items-center gap-2">
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star} className="w-4 h-4 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                  <span>4.9/5 rating</span>
+                </div> */}
+              </div>
+            </div>
+
+            {/* Right Content - Task Demo */}
+            <div className="relative">
+              {/* Task Management Demo */}
+              <div className="relative bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-gray-900">Today's Tasks</h3>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <Clock className="w-4 h-4" />
+                    <span>3 pending reviews</span>
+                  </div>
+                </div>
+
+                {/* Tasks */}
+                <div className="space-y-4">
+                  {/* Completed Task */}
+                  <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 transition-all duration-300 hover:shadow-md">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <CheckCircle className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 line-through">Review project proposal</h4>
+                      <p className="text-sm text-gray-600">Completed • Verified by Sarah</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ArrowRight className="w-5 h-5 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </div>
+
+                  {/* In Progress Task */}
+                  <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 transition-all duration-300 hover:shadow-md">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <Target className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900">Update client presentation</h4>
+                      <p className="text-sm text-gray-600">In Progress • Assigned to Mike</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ArrowRight className="w-5 h-5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </div>
+
+                  {/* Pending Review Task */}
+                  <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 transition-all duration-300 hover:shadow-md">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <Clock className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900">Code review for API</h4>
+                      <p className="text-sm text-gray-600">Pending Review • Waiting for John</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ArrowRight className="w-5 h-5 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </div>
+
+                  {/* New Task */}
+                  <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl border border-purple-200 transition-all duration-300 hover:shadow-md">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <Plus className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900">Schedule team meeting</h4>
+                      <p className="text-sm text-gray-600">New Task • Assign reviewer</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ArrowRight className="w-5 h-5 text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </div>
                 </div>
-              ))}
+
+                {/* Progress Indicator */}
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                    <span>Today's Progress</span>
+                    <span>75% Complete</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-1000" style={{width: '75%'}}></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating Elements */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center shadow-xl animate-bounce">
+                <CheckCircle className="w-10 h-10 text-white" />
+              </div>
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gray-600 rounded-full flex items-center justify-center shadow-xl animate-pulse">
+                <Target className="w-8 h-8 text-white" />
+              </div>
             </div>
           </div>
         </div>
 
-        <h1 className="text-center xl:text-5xl text-black 3xl:text-7xl">What Our Valued <span className="text-yellow-500">Customers</span> Say</h1>
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <ChevronDown className="w-6 h-6 text-gray-400" />
+        </div>
+      </section>
 
-        <div className="flex items-center justify-center flex-wrap gap-8 p-8 mt-16">
+      {/* Features Section */}
+      <section id="features" className="py-20 px-6 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Powerful Features for
+              <span className="block text-gray-700">
+                Maximum Productivity
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Everything you need to stay organized, focused, and productive in one comprehensive platform.
+            </p>
+          </div>
 
-          {[
-            {
-              name: "Kryios Sancho",
-              image: "/images/Screenshot from 2025-01-21 13-51-58.png", 
-              review: "This app has helped me stay organized and on top of all my tasks. Highly recommend! The user interface is clean and intuitive, which makes it easy to use on a daily basis. It's really improved my productivity by helping me prioritize tasks and track my progress in a way I never could before.",
-              rating: 5,
-            },
-            {
-              name: "Jane Smith",
-              image: "/images/pexels-glassesshop-gs-1317359316-30227635.jpg", 
-              review: "Amazing! The UI is simple and clean, and it's perfect for tracking my to-dos. I especially love how I can categorize my tasks, set reminders, and view everything at a glance. It’s really made my day-to-day planning more efficient and less stressful. It has quickly become an essential tool for my routine.",
-              rating: 4,
-            },
-            {
-              name: "John Washington",
-              image: "/images/Screenshot from 2025-01-21 13-48-07.png",
-              review: "I’ve tried many productivity apps, but this one stands out. Great features and user-friendly! What sets it apart is the ability to customize task lists, set deadlines, and track progress with ease. The app is also very reliable, and I haven't experienced any glitches or crashes. It helps me stay focused and organized throughout the day.",
-              rating: 4,
-            },
-            {
-              name: "Ayuk Giress",
-              image: "/images/Screenshot from 2025-01-21 13-42-57.png", 
-              review: "A game-changer for my daily planning! I love the customizable task lists. The app lets me break down bigger projects into manageable chunks, which makes everything feel more achievable. The reminders and due dates ensure that I never miss a task. I’m definitely more productive now, and I find myself more on top of things than ever.",
-              rating: 5,
-            },
-            {
-              name: "Sophia Lee",
-              image: "/images/istockphoto-172655546-1024x1024.jpg", 
-              review: "Good app overall, but there could be a few more features for task prioritization. While I appreciate the task categories and the simplicity, sometimes I feel like I need more options to prioritize tasks based on urgency or importance. However, it's still a solid tool for everyday task management.",
-              rating: 3,
-            },
-            {
-              name: "David Wilson",
-              image: "/images/Screenshot from 2025-01-17 21-31-56.png", 
-              review: "Excellent! I feel more productive and organized than ever before. Worth every penny. The app has everything I need to stay on top of my work and personal tasks. I particularly like how I can sync my tasks across all devices and access them anytime, anywhere. It’s definitely a productivity booster, and I can't imagine my daily routine without it.",
-              rating: 5,
-            },
-          ].map((review, index) => (
-            <div
-              key={index}
-              id={`card-${index}`}
-              data-animate
-              className={`2xl:w-[28rem] xl:w-[25rem] w-[90%] sm:w-[20rem] lg:w-[18rem] bg-white xl:h-[28rem] 3xl:w-[44rem] 3xl:h-[37rem] h-[auto] rounded-2xl shadow-xl shadow-custom-background flex justify-start items-start p-6 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${
-                isVisible[`card-${index}`] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-              }`}
-            >
-              <div className="flex flex-col gap-4 w-full">
-                <div className="flex items-center gap-4">
-                  <img
-                    src={review.image}
-                    alt={review.name}
-                    className="w-20 h-20 rounded-full object-cover"
-                  />
-                  <h3 className="text-xl font-semibold text-gray-800 3xl:text-4xl">{review.name}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="group p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+              >
+                <div className="w-16 h-16 bg-gray-800 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <feature.icon className="text-white" size={32} />
                 </div>
- 
-                <p className="text-lg text-gray-600 my-4 3xl:text-3xl">{review.review}</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-                <div className="flex justify-end items-center gap-2 mt-auto ">
-                  {Array.from({ length: 5 }, (_, index) => (
-                    <Star
-                      key={index}
-                      size={20}
-                      className={index < review.rating ? "text-yellow-500" : "text-gray-300"}
-                    />
-                  ))}
+      {/* Demo Section */}
+      <section className="py-20 px-6 bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                See 
+                <span className=" font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> Tasky.Dev </span>
+                 in Action
+              </h2>
+              <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+                Watch how our intuitive interface helps you manage tasks effortlessly. From simple to-dos to complex project management, Tasky.Dev adapts to your workflow.
+              </p>
+              <button className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-gray-900 font-semibold rounded-full hover:bg-gray-100 transition-all duration-300">
+                <Play className="transition-transform duration-300 group-hover:scale-110" size={20} />
+                Play Demo Video
+              </button>
+            </div>
+            <div className="relative">
+              <div className="aspect-video bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+                <video
+                  src="/images/Screencast from 2025-01-20 23-09-56.webm"
+                  className="w-full h-full object-cover"
+                  controls
+                  preload="metadata"
+                />
+              </div>
+              <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gray-600 rounded-full flex items-center justify-center shadow-lg">
+                <Play className="text-white ml-1" size={32} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 px-6 bg-white" id="stats-section" data-animate>
+        <div className="max-w-7xl mx-auto">
+          <div className={`text-center mb-16 transition-all duration-1000 ${
+            isVisible['stats-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Join
+              <span className="block text-gray-700">
+                Thousands of Success Stories
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Real results from real users who have transformed their productivity and achieved their goals with Tasky.Dev.
+            </p>
+          </div>
+
+          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 transition-all duration-1000 ${
+            isVisible['stats-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
+            {statsData.map((stat, index) => (
+              <div
+                key={index}
+                className={`group relative bg-gray-50 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-200 overflow-hidden ${
+                  currentIndex === index ? 'ring-2 ring-gray-800 scale-105' : 'scale-100'
+                }`}
+              >
+                {/* Background gradient on hover */}
+                <div className="absolute inset-0 bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div className="relative z-10 text-center">
+                  <div className={`${stat.color} w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 shadow-lg`}>
+                    <stat.icon className="text-white" size={28} strokeWidth={1.5} />
+                  </div>
+                  <h4 className="text-3xl font-bold text-gray-800 mb-2">
+                    {animatedStats[index] !== undefined ? animatedStats[index] : stat.value}
+                    {stat.value.includes('+') && '+'}
+                  </h4>
+                  <p className="text-lg font-semibold text-gray-700 mb-2">{stat.text}</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">{stat.description}</p>
+                </div>
+
+                {/* Subtle shine effect */}
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              </div>
+            ))}
+          </div>
+
+          {/* Additional Trust Indicators */}
+          <div className="mt-16 text-center">
+            <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-gray-600" />
+                <span>Enterprise-grade security</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-5 h-5 text-gray-600" />
+                <span>24/7 customer support</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-gray-600" />
+                <span>Continuous improvements</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-20 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl md:text-5xl  font-bold text-gray-500 ">
+                About  <span className="font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
+                  Tasky.Dev
+                  </span> 
+              </h2>
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                Tasky.Dev is a comprehensive productivity platform designed to help individuals and teams achieve their goals through intelligent task management and collaboration tools.
+              </p>
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Target className="text-white" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Our Mission</h3>
+                    <p className="text-gray-600">To empower everyone to reach their full potential by providing intuitive tools that simplify complex workflows and boost productivity.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Shield className="text-white" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Our Values</h3>
+                    <p className="text-gray-600">We believe in simplicity, reliability, and user-centric design. Every feature is built with your success in mind.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="text-white" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Our Vision</h3>
+                    <p className="text-gray-600">To become the world's most trusted productivity platform, helping millions achieve their goals and dreams.</p>
+                  </div>
                 </div>
               </div>
             </div>
-          ))}
+            <div className="relative">
+              <div className="bg-gray-50 rounded-2xl p-8 shadow-xl">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Why Choose Tasky.Dev?</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm">
+                    <CheckCircle className="text-green-500 flex-shrink-0" size={24} />
+                    <span className="text-gray-700">Intuitive and easy to use</span>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm">
+                    <CheckCircle className="text-green-500 flex-shrink-0" size={24} />
+                    <span className="text-gray-700">Powerful collaboration tools</span>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm">
+                    <CheckCircle className="text-green-500 flex-shrink-0" size={24} />
+                    <span className="text-gray-700">Real-time progress tracking</span>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm">
+                    <CheckCircle className="text-green-500 flex-shrink-0" size={24} />
+                    <span className="text-gray-700">Secure and reliable platform</span>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm">
+                    <CheckCircle className="text-green-500 flex-shrink-0" size={24} />
+                    <span className="text-gray-700">24/7 customer support</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div className="flex items-center justify-center flex-col gap-8 p-8 mt-16 h-full xl:h-[20rem] xl:mt-32 bg w-full mb-20">
-          <h1 className="text-lg xl:text-2xl 3xl:text-5xl">What To Grab More Of What Our Platform Can Offer</h1>
-          <button className="w-28 h-10 xl:w-52 rounded-2xl xl:h-12 3xl:w-[25rem] 3xl:h-20 bg-blue-600 text-white hover:bg-blue-800 3xl:text-3xl">Contact us Now</button>
+      {/* Contact Section */}
+      <section id="contact" className="py-20 px-6 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Get In Touch
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Have questions or need support? We'd love to hear from you. Reach out to our team and we'll get back to you as soon as possible.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="space-y-8">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <MapPin className="text-white" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Our Location</h3>
+                  <p className="text-gray-600">Yaoundé, Jouvence<br />Cameroon</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Phone className="text-white" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Phone</h3>
+                  <p className="text-gray-600">+237 676 184 440</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Mail className="text-white" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Email</h3>
+                  <p className="text-gray-600">tasky.dev@gmail.com</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl shadow-xl">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h3>
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors"
+                      placeholder="Your first name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors"
+                      placeholder="Your last name"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <input
+                    type="email"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors"
+                    placeholder="your@email.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                  <textarea
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors resize-none"
+                    placeholder="Tell us how we can help you..."
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-gray-900 text-white py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-semibold"
+                >
+                  Send Message
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-6 bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Ready to Transform Your Productivity?
+          </h2>
+          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            Join thousands of users who have already taken control of their tasks and achieved their goals with Tasky.Dev.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <Link to='/register'>
+              <button className="group px-8 py-4 bg-white text-gray-900 font-semibold rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-lg flex items-center gap-3">
+                Start Your Journey
+                <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" size={20} />
+              </button>
+            </Link>
+            <button className="px-8 py-4 border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-gray-900 transition-all duration-300">
+              Learn More
+            </button>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

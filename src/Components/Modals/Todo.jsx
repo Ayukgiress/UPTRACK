@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuth } from '../../Pages/AuthContext';
 
 const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
+  const { currentUser } = useAuth();
   const [todo, setTodo] = useState(getInitialTodoState());
   const [errors, setErrors] = useState({});
-  const [assignedTo, setAssignedTo] = useState(''); 
+  const [assignedTo, setAssignedTo] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState('');
+  const [contributors, setContributors] = useState([]);
 
   function getInitialTodoState() {
     return {
@@ -18,11 +23,57 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
     };
   }
 
+  useEffect(() => {
+    if (isOpen && currentUser) {
+      fetchProjects();
+    }
+  }, [isOpen, currentUser]);
+
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/projects/api/projects/${currentUser._id}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      setProjects(response.data);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    }
+  };
+
+  const handleProjectChange = (projectId) => {
+    setSelectedProject(projectId);
+    setAssignedTo('');
+
+    if (projectId) {
+      // Find the selected project from the already fetched projects list
+      const selectedProjectData = projects.find(project => project._id === projectId);
+      // Include the owner (current user) as the first contributor
+      const projectContributors = selectedProjectData?.contributors || [];
+      setContributors([currentUser, ...projectContributors]);
+    } else {
+      setContributors([]);
+    }
+  };
+
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!todo.title.trim()) {
       newErrors.title = 'Title is required';
+    }
+
+    if (!selectedProject) {
+      newErrors.project = 'Project selection is required';
+    }
+
+    if (!assignedTo) {
+      newErrors.assignedTo = 'Contributor assignment is required';
     }
 
     if (todo.dueDate && new Date(todo.dueDate) < new Date()) {
@@ -77,7 +128,8 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
             .map(sub => ({ ...sub, title: sub.title.trim() }))
             .filter(sub => sub.title !== ''),
           completed: false,
-          assignedTo: assignedTo.trim() 
+          assignedTo: assignedTo.trim(),
+          projectId: selectedProject || null
         };
 
         await onAddTodos(cleanedTodo);
@@ -85,7 +137,9 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
         toast.success('Todo added successfully!');
         
         setTodo(getInitialTodoState());
-        setAssignedTo(''); 
+        setAssignedTo('');
+        setSelectedProject('');
+        setContributors([]);
         onClose();
       } catch (error) {
         toast.error('Failed to add todo. Please try again.');
@@ -153,13 +207,41 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
             
           </div>
 
-          <input
-        type="email"
-        value={assignedTo}
-        onChange={(e) => setAssignedTo(e.target.value)}
-        className="border rounded-lg p-2 w-full"
-        placeholder="Enter email to assign reviewer"
-      />
+          <div className="mt-4">
+            <label className="block text-sm font-medium mb-2">Project *</label>
+            <select
+              value={selectedProject}
+              onChange={(e) => handleProjectChange(e.target.value)}
+              className={`border rounded-lg p-2 w-full ${errors.project ? 'border-red-500' : 'border-gray-300'}`}
+            >
+              <option value="">Select a project</option>
+              {projects.map((project) => (
+                <option key={project._id} value={project._id}>
+                  {project.name}
+                </option>
+              ))}
+            </select>
+            {errors.project && <p className="text-red-500 text-sm mt-1">{errors.project}</p>}
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium mb-2">
+              Assign to Contributor *
+            </label>
+            <select
+              value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
+              className={`border rounded-lg p-2 w-full ${errors.assignedTo ? 'border-red-500' : 'border-gray-300'}`}
+            >
+              <option value="">Select a contributor</option>
+              {contributors.map((contributor) => (
+                <option key={contributor._id || contributor.email} value={contributor.email}>
+                  {contributor.name || contributor.email}
+                </option>
+              ))}
+            </select>
+            {errors.assignedTo && <p className="text-red-500 text-sm mt-1">{errors.assignedTo}</p>}
+          </div>
 
           <div className="mt-4">
             <div className="flex justify-between items-center mb-2">

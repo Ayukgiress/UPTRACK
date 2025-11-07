@@ -3,6 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Pages/AuthContext';
 import { toast } from 'sonner';
+import { API_BASE_URL } from '../lib/constants.js';
 
 const GoogleAuth = () => {
   const navigate = useNavigate();
@@ -18,8 +19,8 @@ const GoogleAuth = () => {
   const handleGoogleLogin = () => {
     setLoading(true);
     try {
-      
-      window.location.href = `https://ticks-api.onrender.com/users/auth/google`;
+      // Redirect to local backend Google OAuth endpoint
+      window.location.href = `${API_BASE_URL}/users/auth/google`;
     } catch (error) {
       console.error("Google login failed:", error);
       setLoading(false);

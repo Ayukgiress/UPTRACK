@@ -5,18 +5,25 @@ import SidebarSkeleton from './Skeletons/SidebarSkeleton';
 import { useAuth } from '../Pages/AuthContext';
 
 export default function ChatSideBar() {
-  const { getUsers, users, selectedUser, isUsersLoading, } = useChatStore(); 
-  const { onlineUsers } = useAuth(); 
-
+  const { getUsers, users, selectedUser, isUsersLoading, setSelectedUser } = useChatStore();
+  const { onlineUsers, currentUser, currentUserLoading } = useAuth();
 
   useEffect(() => {
-    getUsers();
-  }, [getUsers]);
+    if (!currentUserLoading && currentUser?._id) {
+      getUsers(currentUser);
+    }
+  }, [getUsers, currentUserLoading, currentUser]);
+
+  useEffect(() => {
+    if (!selectedUser && users.length > 0) {
+      setSelectedUser(users[0]);
+    }
+  }, [users, selectedUser, setSelectedUser]);
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
   return (
-    <aside className="h-full w-20 lg:w-72 border-r border-base flex flex-col transition-all duration-200">
+    <aside className="h-full w-24 lg:w-72 border-r border-base flex flex-col transition-all duration-200 bg-white">
       <div className="border-b border-base-300 w-full p-5">
         <div className="flex items-center gap-2">
           <Users className="size-6" />
@@ -25,22 +32,38 @@ export default function ChatSideBar() {
       </div>
 
       <div className="overflow-y-auto w-full py-3">
-        {users.map((user) => (
-          <button
-            key={user.id}
-            className={`w-full p-3 flex items-center gap-3 hover:bg-base-200 transition-colors
-              ${selectedUser?.id === user.id ? 'bg-blue-600' : ''}`}
-          >
-            <div className="w-10 h-10 rounded-full bg-base-300" />
-            <div className="hidden lg:block">
-              <p className="font-medium">{user.name}</p>
-              <p className="text-sm text-base-content/70">{user.status}</p>
-              <div className="text-sm text-black">
-                {onlineUsers.includes(user._id) ? 'online' : 'offline'}
+        {users.map((user) => {
+          const isSelected = selectedUser?._id === user._id;
+          const displayName = user.userName || user.name || user.fullName || user.email || 'User';
+          return (
+            <button
+              key={user._id}
+              onClick={() => setSelectedUser(user)}
+              className={`w-full p-3 flex items-center gap-3 text-left rounded-lg transition-colors
+                ${isSelected ? 'bg-blue-600 text-white' : 'hover:bg-base-200'}`}
+            >
+              <div className={`w-10 h-10 rounded-full border flex items-center justify-center
+                ${isSelected ? 'border-white' : 'border-base-300 bg-base-300'}`}
+              >
+                <span className="text-sm font-semibold">
+                  {displayName.charAt(0).toUpperCase()}
+                </span>
               </div>
-            </div>
-          </button>
-        ))}
+              <div className="hidden lg:block">
+                <p className="font-medium truncate">{displayName}</p>
+                <p className="text-sm text-base-content/70 truncate">{user.email}</p>
+                <div className="text-xs text-base-content/60">
+                  {onlineUsers?.includes(user._id) ? 'online' : 'offline'}
+                </div>
+              </div>
+            </button>
+          );
+        })}
+        {users.length === 0 && (
+          <div className="px-4 py-6 text-sm text-base-content/70">
+            No contacts available.
+          </div>
+        )}
       </div>
     </aside>
   );

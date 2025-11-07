@@ -1,16 +1,19 @@
-import React, { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaEye, FaEyeSlash, FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import Narbar from "../../Components/Narbar";
 import Footer from "../../Components/Footer";
 import GoogleAuth from "../../Components/GoogleAuth";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { API_BASE_URL } from "../../lib/constants.js";
 
 const Registration = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     register,
@@ -18,10 +21,17 @@ const Registration = () => {
     formState: { errors },
   } = useForm();
 
+  useEffect(() => {
+    // Store the redirect URL for after registration (for supervisor links)
+    if (location.pathname.includes('/supervisor/')) {
+      localStorage.setItem('redirectAfterLogin', '/dashboard/supervisor');
+    }
+  }, [location]);
+
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await fetch(`https://ticks-api.onrender.com/users/register`, {
+      const response = await fetch(`${API_BASE_URL}/users/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,7 +50,7 @@ const Registration = () => {
           "Registration successful! Please check your email for verification instructions."
         );
         navigate("/verify-email");
-        
+
       } else {
         let errorData = {};
         try {
@@ -61,11 +71,12 @@ const Registration = () => {
   };
 
   return (
-      <section className="bg-custom-first min-h-screen flex items-center justify-center bg-custom-gradient">
+      <section className="bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="flex flex-col lg:flex-row items-center justify-center w-full max-w-7xl px-6 py-8 gap-12 lg:gap-24">
           {/* Centered Content */}
-          <div className="w-full lg:w-1/2 bg-white rounded-lg shadow-md p-6 space-y-4 sm:p-8">
-            <h2 className="text-2xl font-bold text-center mb-6 text-black">
+          <div className="w-full lg:w-1/2 bg-white rounded-2xl shadow-xl p-8 space-y-6 border border-gray-100">
+            <h2 className="text-2xl font-bold text-center mb-6 text-black flex items-center justify-center gap-2">
+              <Sparkles className="text-yellow-500" size={24} />
               Create your account
             </h2>
 
@@ -73,8 +84,9 @@ const Registration = () => {
               <div>
                 <label
                   htmlFor="username"
-                  className="block text-sm font-medium text-black mb-2"
+                  className="block text-sm font-medium text-black mb-2 flex items-center gap-2"
                 >
+                  <FaUser className="text-blue-500" />
                   Username
                 </label>
                 <input
@@ -82,11 +94,12 @@ const Registration = () => {
                     required: "Username is required",
                   })}
                   type="text"
-                  className="bg-white border border-gray-300 w-full p-2.5 rounded-lg text-base"
+                  className="bg-gray-50 border border-gray-300 w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 text-base"
                   placeholder="Username"
                 />
                 {errors.username && (
-                  <p className="text-red-500 text-sm">
+                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <span className="text-red-500">⚠️</span>
                     {errors.username.message}
                   </p>
                 )}
@@ -95,8 +108,9 @@ const Registration = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-black mb-2"
+                  className="block text-sm font-medium text-black mb-2 flex items-center gap-2"
                 >
+                  <FaEnvelope className="text-blue-500" />
                   Your email
                 </label>
                 <input
@@ -105,11 +119,14 @@ const Registration = () => {
                     pattern: /^[^@]+@[^@]+\.[^@]+$/,
                   })}
                   type="email"
-                  className="bg-white border border-gray-300 w-full p-2.5 rounded-lg text-base"
-                  placeholder="name@cgmail.com"
+                  className="bg-gray-50 border border-gray-300 w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 text-base"
+                  placeholder="name@gmail.com"
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email.message}</p>
+                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <span className="text-red-500">⚠️</span>
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
@@ -117,8 +134,9 @@ const Registration = () => {
                 <div className="flex items-center justify-between">
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-black mb-2"
+                    className="block text-sm font-medium text-black mb-2 flex items-center gap-2"
                   >
+                    <FaLock className="text-blue-500" />
                     Password
                   </label>
                 </div>
@@ -128,20 +146,21 @@ const Registration = () => {
                       required: "Password is required",
                     })}
                     type={passwordVisible ? "text" : "password"}
-                    className="bg-white border border-gray-300 w-full p-2.5 rounded-lg text-base"
+                    className="bg-gray-50 border border-gray-300 w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 text-base"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setPasswordVisible(!passwordVisible)}
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-600"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-500 transition-colors duration-200"
                   >
                     {passwordVisible ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
 
                 {errors.password && (
-                  <p className="text-red-500 text-sm">
+                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <span className="text-red-500">⚠️</span>
                     {errors.password.message}
                   </p>
                 )}
@@ -150,10 +169,20 @@ const Registration = () => {
               <div className="mt-4">
                 <button
                   type="submit"
-                  className="w-full bg-blue-800 text-white p-2.5 rounded-lg text-lg"
+                  className="w-full bg-gray-900 text-white p-3 rounded-lg hover:bg-gray-800 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-lg group"
                   disabled={loading}
                 >
-                  {loading ? "Registering..." : "Sign up"}
+                  {loading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Registering...
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2">
+                      Sign up
+                      <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" size={16} />
+                    </div>
+                  )}
                 </button>
               </div>
 
@@ -161,9 +190,9 @@ const Registration = () => {
                 <GoogleAuth />
               </div>
 
-              <p className="text-sm text-center mt-4 text-black">
+              <p className="text-sm text-center mt-4 text-gray-600">
                 Already have an account?{" "}
-                <Link to="/login" className="text-primary-600">
+                <Link to="/login" className="text-gray-900 hover:text-gray-700 font-medium transition-colors duration-200 hover:underline">
                   Login here
                 </Link>
               </p>

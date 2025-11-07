@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-// import API_URL from '../Pages/Constants/Constants';
+import { API_BASE_URL } from '../lib/constants.js';
 
 const VerifyEmail = () => {
   const { token } = useParams();
@@ -13,7 +13,7 @@ const VerifyEmail = () => {
       if (!token) return;
   
       try {
-        const response = await fetch(`https://ticks-api.onrender.com/users/verify-email/${token}`, {
+        const response = await fetch(`${API_BASE_URL}/users/verify-email/${token}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -25,7 +25,16 @@ const VerifyEmail = () => {
         if (response.ok && data.success) {
           setVerificationStatus('success');
           toast.success("Email verified successfully! You can now log in.");
-          setTimeout(() => navigate("/login"), 2000);
+          // Check if there's a redirect URL in localStorage (from supervisor link)
+          const redirectUrl = localStorage.getItem('redirectAfterLogin');
+          setTimeout(() => {
+            if (redirectUrl) {
+              localStorage.removeItem('redirectAfterLogin');
+              navigate(redirectUrl);
+            } else {
+              navigate("/login");
+            }
+          }, 2000);
         } else {
           setVerificationStatus('error');
           toast.error(data.message || "Verification failed. Please try again.");

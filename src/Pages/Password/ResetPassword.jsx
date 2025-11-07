@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { API_BASE_URL } from '../../lib/constants.js';
 
 const PasswordResetRequest = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +10,7 @@ const PasswordResetRequest = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`https://ticks-api.onrender.com/users/reset-password-request`, { email });
+      const response = await axios.post(`${API_BASE_URL}/users/reset-password-request`, { email });
       
       toast.success("Password reset email sent successfully.");
     } catch (error) {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { API_BASE_URL } from '../../lib/constants.js';
 
 const PasswordReset = () => {
   const { token } = useParams(); 
@@ -21,7 +22,7 @@ const PasswordReset = () => {
     }
 
     try {
-      const response = await axios.post(`https://ticks-api.onrender.com/users/reset-password/${token}`, { password: newPassword });
+      const response = await axios.post(`${API_BASE_URL}/users/reset-password/${token}`, { password: newPassword });
 
       toast.success('Password reset successful! Redirecting to login...');
       
