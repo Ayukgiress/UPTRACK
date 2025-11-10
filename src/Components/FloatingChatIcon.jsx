@@ -4,18 +4,19 @@ import { useChatStore } from './Store/useChatStore';
 import { useNavigate } from 'react-router-dom';
 
 const FloatingChatIcon = () => {
-  const { unreadMessages } = useChatStore();
+  const { getTotalUnreadMessages } = useChatStore();
+  const unreadMessages = getTotalUnreadMessages();
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/dashboard', { state: { openChat: true } });
+    navigate('/dashboard?chat=open');
   };
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <button
         onClick={handleClick}
-        className="relative bg-primary text-primary-foreground p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+        className="relative bg-blue-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
         title="Open Chat"
       >
         <MessageCircle size={24} />

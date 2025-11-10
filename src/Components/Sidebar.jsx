@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, Clock, CheckCircle, Settings, Grid, BarChart3, UserCheck, FolderOpen, MessageCircle } from 'lucide-react';
+import { Menu, X, Home, Clock, CheckCircle, Settings, Grid, BarChart3, UserCheck, FolderOpen } from 'lucide-react';
 import Profile from './Profile';
 import { useTranslation } from 'react-i18next';
-import { useChatStore } from './Store/useChatStore';
 
 
 const Sidebar = () => {
   const { t } = useTranslation();
-  const { unreadMessages } = useChatStore();
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
@@ -36,7 +34,6 @@ const Sidebar = () => {
     { icon: UserCheck, text: t('Supervisor'), path: '/dashboard/supervisor' },
     { icon: FolderOpen, text: t('Projects'), path: '/dashboard/projects' },
     { icon: BarChart3, text: t('Analytics'), path: '/dashboard/charts' },
-    { icon: MessageCircle, text: t('Chat'), path: '/dashboard', badge: unreadMessages > 0 ? unreadMessages : null },
     { icon: Settings, text: t('Settings'), path: '/dashboard/settings' }
   ];
 

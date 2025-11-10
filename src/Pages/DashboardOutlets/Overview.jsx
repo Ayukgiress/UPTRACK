@@ -11,41 +11,53 @@ import ChatSideBar from "../../Components/ChatSideBar";
 import ChatContainer from "../../Components/ChatContainer";
 import NoChatSelected from "../../Components/NoChatSelected";
 import { API_BASE_URL } from "../../lib/constants";
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 const Overview = () => {
   const { t } = useTranslation();
-  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [todos, setTodos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { isAuthenticated, currentUser, currentUserLoading } = useAuth();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentTodo, setCurrentTodo] = useState(null);
-  const [isChatOpen, setIsChatOpen] = useState(location.search.includes('chat=open') || location.state?.openChat || false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [contributors, setContributors] = useState([]);
   const [selectedContributor, setSelectedContributor] = useState(null);
   const [contributorsEmails, setContributorsEmails] = useState('');
   const { selectedUser, subscribeToMessages, unsubscribeFromMessages, setChatOpen, markMessagesAsRead, unreadMessages } = useChatStore();
   const { socket } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
     fetchTodos();
     fetchContributors();
-  }, [currentUser, isAuthenticated]);
+
+    // Check if chat should be opened from URL parameter
+    const urlParams = new URLSearchParams(location.search);
+    if (urlParams.get('chat') === 'open') {
+      setIsChatOpen(true);
+    }
+
+    // Set up periodic refetch to show real-time updates for task completions
+    const interval = setInterval(() => {
+      fetchTodos();
+    }, 30000); // refetch every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [currentUser, isAuthenticated, location.search]);
 
   useEffect(() => {
     if (isChatOpen) {
-      subscribeToMessages(socket);
+      subscribeToMessages(socket, currentUser?._id);
       setChatOpen(true);
-      markMessagesAsRead();
     } else {
       unsubscribeFromMessages(socket);
       setChatOpen(false);
     }
 
     return () => unsubscribeFromMessages(socket);
-  }, [isChatOpen, subscribeToMessages, unsubscribeFromMessages, socket, setChatOpen, markMessagesAsRead]);
+  }, [isChatOpen, subscribeToMessages, unsubscribeFromMessages, socket, setChatOpen, currentUser?._id]);
 
   const fetchTodos = async () => {
     if (currentUserLoading || !isAuthenticated) {
@@ -85,11 +97,21 @@ const Overview = () => {
         index === self.findIndex(t => t._id === todo._id)
       );
 
+      // Filter todos based on user role and completion status
       const filteredTodos = uniqueTodos.filter(todo => {
         const dueDate = new Date(todo.dueDate);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        return dueDate >= today || todo.completed;
+
+        // If the current user is the creator/owner of the todo
+        if (todo.createdBy === currentUser._id) {
+          // Show all todos created by the owner (both pending and completed)
+          return dueDate >= today || todo.completed;
+        } else {
+          // If the current user is assigned to the todo (contributor)
+          // Only show if not completed (contributors shouldn't see completed todos they worked on)
+          return !todo.completed && (dueDate >= today || todo.completed);
+        }
       });
       setTodos(filteredTodos);
     } catch (error) {
@@ -136,31 +158,67 @@ const Overview = () => {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const toggleTodoCompletion = async (index) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index].completed = !updatedTodos[index].completed;
+  const [completingTodos, setCompletingTodos] = useState(new Set());
+  const [updatingSubtasks, setUpdatingSubtasks] = useState(new Set());
 
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  const toggleTodoCompletion = async (index) => {
+    const todo = todos[index];
+    const todoId = todo._id;
+
+    if (completingTodos.has(todoId)) return; // Prevent double-clicks
+
+    setCompletingTodos(prev => new Set(prev).add(todoId));
+
+    const isAssignedToCurrentUser = todo.assignedTo === currentUser.email;
+    const isCreatedByCurrentUser = todo.createdBy === currentUser._id || todo.userId === currentUser._id;
 
     try {
-      const response = await axios.put(
-        `${API_BASE_URL}/todos/api/todos/${updatedTodos[index]._id}`,
-        updatedTodos[index],
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      // If the user is assigned to this todo (contributor), use the public endpoint
+      if (isAssignedToCurrentUser && !isCreatedByCurrentUser) {
+        const response = await axios.put(
+          `${API_BASE_URL}/todos/api/public-todos/${todo._id}/complete`,
+          { email: currentUser.email }
+        );
 
-      setTodos((prevTodos) =>
-        prevTodos.map((todo) =>
-          todo._id === response.data._id ? response.data : todo
-        )
-      );
+        setTodos((prevTodos) =>
+          prevTodos.map((t) =>
+            t._id === response.data._id ? response.data : t
+          )
+        );
+        toast.success("Task marked as completed!");
+      } else {
+        // If the user created this todo (owner), use the authenticated endpoint
+        const updatedTodos = [...todos];
+        updatedTodos[index].completed = !updatedTodos[index].completed;
+
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await axios.put(
+          `${API_BASE_URL}/todos/api/todos/${updatedTodos[index]._id}`,
+          updatedTodos[index],
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setTodos((prevTodos) =>
+          prevTodos.map((todo) =>
+            todo._id === response.data._id ? response.data : todo
+          )
+        );
+      }
     } catch (error) {
       console.error("Error updating todo:", error);
+      toast.error("Failed to update task");
+    } finally {
+      setCompletingTodos(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(todoId);
+        return newSet;
+      });
     }
   };
 
@@ -221,37 +279,70 @@ const Overview = () => {
   };
 
   const toggleSubtaskCompletion = async (todoId, subtaskIndex) => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+    const subtaskKey = `${todoId}-${subtaskIndex}`;
+
+    if (updatingSubtasks.has(subtaskKey)) return; // Prevent double-clicks
+
+    setUpdatingSubtasks(prev => new Set(prev).add(subtaskKey));
+
+    const todo = todos.find(todo => todo._id === todoId);
+    if (!todo) return;
+
+    const isAssignedToCurrentUser = todo.assignedTo === currentUser.email;
+    const isCreatedByCurrentUser = todo.createdBy === currentUser._id || todo.userId === currentUser._id;
 
     try {
-      const todoToUpdate = todos.find(todo => todo._id === todoId);
-      if (!todoToUpdate) return;
+      // If the user is assigned to this todo (contributor), use the public endpoint
+      if (isAssignedToCurrentUser && !isCreatedByCurrentUser) {
+        const response = await axios.put(
+          `${API_BASE_URL}/todos/api/public-todos/${todoId}/subtask`,
+          {
+            subtaskIndex,
+            email: currentUser.email
+          }
+        );
 
-      const updatedSubtodos = [...todoToUpdate.subtodos];
-      updatedSubtodos[subtaskIndex].completed = !updatedSubtodos[subtaskIndex].completed;
+        setTodos((prevTodos) =>
+          prevTodos.map((t) =>
+            t._id === response.data._id ? response.data : t
+          )
+        );
+      } else {
+        // If the user created this todo (owner), use the authenticated endpoint
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-      const response = await axios.put(
-        `${API_BASE_URL}/todos/api/todos/${todoId}`,
-        {
-          ...todoToUpdate,
-          subtodos: updatedSubtodos
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const updatedSubtodos = [...todo.subtodos];
+        updatedSubtodos[subtaskIndex].completed = !updatedSubtodos[subtaskIndex].completed;
+
+        const response = await axios.put(
+          `${API_BASE_URL}/todos/api/todos/${todoId}`,
+          {
+            ...todo,
+            subtodos: updatedSubtodos
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      setTodos((prevTodos) =>
-        prevTodos.map((todo) =>
-          todo._id === response.data._id ? response.data : todo
-        )
-      );
+        setTodos((prevTodos) =>
+          prevTodos.map((todo) =>
+            todo._id === response.data._id ? response.data : todo
+          )
+        );
+      }
     } catch (error) {
       console.error("Error updating subtask:", error);
       toast.error("Failed to update subtask");
+    } finally {
+      setUpdatingSubtasks(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(subtaskKey);
+        return newSet;
+      });
     }
   };
 
@@ -305,6 +396,7 @@ const Overview = () => {
 
   return (
     <div className="w-full space-y-8 relative">
+
 
       {/* Chat Box */}
       {isChatOpen && (
@@ -514,19 +606,24 @@ const Overview = () => {
               <div className="flex items-start justify-between mb-4">
                 <button
                   onClick={() => toggleTodoCompletion(index)}
+                  disabled={completingTodos.has(todo._id)}
                   className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-200
                     ${todo.completed
                       ? "bg-green-500 border-green-500 text-white"
                       : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
-                    }`}
+                    } ${completingTodos.has(todo._id) ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
-                  {todo.completed && <CheckCircle className="w-5 h-5" />}
+                  {completingTodos.has(todo._id) ? (
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  ) : todo.completed ? (
+                    <CheckCircle className="w-5 h-5" />
+                  ) : null}
                 </button>
 
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   <button
                     onClick={() => handleOpenEditModal(todo)}
-                    className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg transition-colors"
+                    className="p-2 text-primary hover:bg-primary/10 dark:hover:bg-primary/20 rounded-lg transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -534,7 +631,7 @@ const Overview = () => {
                   </button>
                   <button
                     onClick={() => handleDeleteTodo(todo._id)}
-                    className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors"
+                    className="p-2 text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -598,23 +695,6 @@ const Overview = () => {
                   <div className="space-y-2">
                     {todo.subtodos.map((subtask, subIndex) => (
                       <div key={subIndex} className="flex items-center gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleSubtaskCompletion(todo._id, subIndex);
-                          }}
-                          className={`w-4 h-4 rounded border flex items-center justify-center transition-all duration-200
-                            ${subtask.completed
-                              ? "bg-green-500 border-green-500 text-white"
-                              : "border-border hover:border-green-400 hover:bg-green-50"
-                            }`}
-                        >
-                          {subtask.completed && (
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          )}
-                        </button>
                         <span className={`text-sm flex-1 ${subtask.completed ? "line-through text-muted-foreground" : "text-card-foreground"}`}>
                           {subtask.title}
                         </span>

@@ -171,7 +171,7 @@ const Completed = () => {
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   <button
                     onClick={() => handleDeleteTodo(todo._id)}
-                    className="p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                    className="p-2 text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -233,23 +233,6 @@ const Completed = () => {
                   <div className="space-y-2">
                     {todo.subtodos.map((subtask, subIndex) => (
                       <div key={subIndex} className="flex items-center gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleSubtaskCompletion(todo._id, subIndex);
-                          }}
-                          className={`w-4 h-4 rounded border flex items-center justify-center transition-all duration-200
-                            ${subtask.completed
-                              ? "bg-green-500 border-green-500 text-white"
-                              : "border-gray-300 hover:border-green-400 hover:bg-green-50"
-                            }`}
-                        >
-                          {subtask.completed && (
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          )}
-                        </button>
                         <span className={`text-sm flex-1 ${subtask.completed ? "line-through text-green-400 dark:text-green-500" : "text-green-700 dark:text-green-300"}`}>
                           {subtask.title}
                         </span>

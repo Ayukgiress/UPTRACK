@@ -5,7 +5,7 @@ import SidebarSkeleton from './Skeletons/SidebarSkeleton';
 import { useAuth } from '../Pages/AuthContext';
 
 export default function ChatSideBar() {
-  const { getUsers, users, selectedUser, isUsersLoading, setSelectedUser } = useChatStore();
+  const { getUsers, users, selectedUser, isUsersLoading, setSelectedUser, unreadMessagesPerUser } = useChatStore();
   const { onlineUsers, currentUser, currentUserLoading } = useAuth();
 
   useEffect(() => {
@@ -35,21 +35,27 @@ export default function ChatSideBar() {
         {users.map((user) => {
           const isSelected = selectedUser?._id === user._id;
           const displayName = user.userName || user.name || user.fullName || user.email || 'User';
+          const unreadCount = unreadMessagesPerUser[user._id] || 0;
           return (
             <button
               key={user._id}
               onClick={() => setSelectedUser(user)}
-              className={`w-full p-3 flex items-center gap-3 text-left rounded-lg transition-colors
+              className={`w-full p-3 flex items-center gap-3 text-left rounded-lg transition-colors relative
                 ${isSelected ? 'bg-blue-600 text-white' : 'hover:bg-base-200'}`}
             >
-              <div className={`w-10 h-10 rounded-full border flex items-center justify-center
+              <div className={`w-10 h-10 rounded-full border flex items-center justify-center relative
                 ${isSelected ? 'border-white' : 'border-base-300 bg-base-300'}`}
               >
                 <span className="text-sm font-semibold">
                   {displayName.charAt(0).toUpperCase()}
                 </span>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </span>
+                )}
               </div>
-              <div className="hidden lg:block">
+              <div className="hidden lg:block flex-1 min-w-0">
                 <p className="font-medium truncate">{displayName}</p>
                 <p className="text-sm text-base-content/70 truncate">{user.email}</p>
                 <div className="text-xs text-base-content/60">

@@ -31,6 +31,7 @@ import Projects from './Pages/DashboardOutlets/Projects'
 import PasswordReset from './Pages/Password/ResetToken'
 import PasswordResetRequest from './Pages/Password/ResetPassword'
 import AcceptInvitation from './Pages/AcceptInvitation'
+import FloatingChatIcon from './Components/FloatingChatIcon'
 
 
 function AppContent() {
@@ -60,6 +61,7 @@ function AppContent() {
 
           </Route>
         </Routes>
+        <FloatingChatIcon />
       </Router>
   );
 }

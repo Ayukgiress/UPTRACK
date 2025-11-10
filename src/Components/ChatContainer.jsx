@@ -15,7 +15,7 @@ const ChatContainer = () => {
   useEffect(() => {
     if (!selectedUser?.email) return;
     getMessages(selectedUser.email);
-    markMessagesAsRead();
+    markMessagesAsRead(selectedUser._id);
   }, [selectedUser, getMessages, markMessagesAsRead]);
 
   useEffect(() => {

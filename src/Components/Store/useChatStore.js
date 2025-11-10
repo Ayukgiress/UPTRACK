@@ -8,7 +8,7 @@ export const useChatStore = create((set, get) => ({
     selectedUser: null,
     isUsersLoading: false,
     isMessagesLoading: false,
-    unreadMessages: 0,
+    unreadMessagesPerUser: {}, // { userId: count }
     isChatOpen: false,
 
     getUsers: async (currentUser) => {
@@ -85,17 +85,49 @@ export const useChatStore = create((set, get) => ({
         }
     },
 
-    subscribeToMessages: (socket) => {
+    subscribeToMessages: (socket, currentUserId) => {
         if (!socket) return;
 
+        // Request notification permission if not granted
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+
         socket.on('newMessage', (newMessage) => {
-            const { selectedUser, isChatOpen } = get();
+            const { selectedUser, isChatOpen, unreadMessagesPerUser, users } = get();
             const isMessageForCurrentChat = selectedUser && newMessage.senderId === selectedUser._id;
 
-            set((state) => ({
-                messages: [...state.messages, newMessage],
-                unreadMessages: isMessageForCurrentChat || isChatOpen ? state.unreadMessages : state.unreadMessages + 1
-            }));
+            // Don't increment unread count for the user's own messages
+            if (newMessage.senderId === currentUserId) {
+                set((state) => ({
+                    messages: [...state.messages, newMessage]
+                }));
+                return;
+            }
+
+            if (!isMessageForCurrentChat && !isChatOpen) {
+                set((state) => ({
+                    messages: [...state.messages, newMessage],
+                    unreadMessagesPerUser: {
+                        ...state.unreadMessagesPerUser,
+                        [newMessage.senderId]: (state.unreadMessagesPerUser[newMessage.senderId] || 0) + 1
+                    }
+                }));
+
+                // Show browser notification if chat is not open
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    const sender = users.find(u => u._id === newMessage.senderId);
+                    const senderName = sender ? (sender.userName || sender.name || sender.fullName || sender.email || 'Unknown') : 'Unknown';
+                    new Notification(`New message from ${senderName}`, {
+                        body: newMessage.text || 'You have a new message',
+                        icon: '/vite.svg' // optional
+                    });
+                }
+            } else {
+                set((state) => ({
+                    messages: [...state.messages, newMessage]
+                }));
+            }
         });
     },
 
@@ -105,11 +137,36 @@ export const useChatStore = create((set, get) => ({
         socket.off('newMessage');
     },
 
-    setSelectedUser: (selectedUser) => set({ selectedUser }),
+    setSelectedUser: (selectedUser) => {
+        set({ selectedUser });
+        // Mark messages as read for the selected user
+        if (selectedUser) {
+            set((state) => ({
+                unreadMessagesPerUser: {
+                    ...state.unreadMessagesPerUser,
+                    [selectedUser._id]: 0
+                }
+            }));
+        }
+    },
 
     setChatOpen: (isOpen) => set({ isChatOpen: isOpen }),
 
-    markMessagesAsRead: () => set({ unreadMessages: 0 }),
+    markMessagesAsRead: (userId) => {
+        if (userId) {
+            set((state) => ({
+                unreadMessagesPerUser: {
+                    ...state.unreadMessagesPerUser,
+                    [userId]: 0
+                }
+            }));
+        }
+    },
+
+    getTotalUnreadMessages: () => {
+        const { unreadMessagesPerUser } = get();
+        return Object.values(unreadMessagesPerUser).reduce((total, count) => total + count, 0);
+    },
 
     findUserByEmail: async (email) => {
         try {
