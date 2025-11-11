@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../Pages/AuthContext';
-import { LogOut, Menu, X, ChevronDown } from 'lucide-react';
+import { useTheme } from './ThemeContext';
+import { LogOut, Menu, X, ChevronDown, Sun, Moon, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
+  const { theme, toggleTheme, language, changeLanguage } = useTheme();
+  const { t, i18n } = useTranslation();
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -24,6 +29,12 @@ const Navbar = () => {
     logout();
     navigate('/');
     setIsMobileMenuOpen(false);
+  };
+
+  const handleLanguageChange = (newLang) => {
+    changeLanguage(newLang);
+    i18n.changeLanguage(newLang);
+    setIsLanguageMenuOpen(false);
   };
 
   return (
@@ -71,6 +82,49 @@ const Navbar = () => {
               Contact
             </button>
 
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800 transition-all duration-200"
+              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            >
+              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
+
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
+                className="flex items-center gap-2 p-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800 transition-all duration-200"
+                title="Change language"
+              >
+                <Globe size={20} />
+                <span className="text-sm font-medium">{language.toUpperCase()}</span>
+                <ChevronDown size={16} className={`transition-transform duration-200 ${isLanguageMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isLanguageMenuOpen && (
+                <div className="absolute right-0 mt-2 w-32 bg-gray-800 border border-gray-700 rounded-lg shadow-lg py-1 z-50">
+                  <button
+                    onClick={() => handleLanguageChange('en')}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors duration-200 ${
+                      language === 'en' ? 'text-blue-400 bg-gray-700' : 'text-gray-300'
+                    }`}
+                  >
+                    English
+                  </button>
+                  <button
+                    onClick={() => handleLanguageChange('fr')}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors duration-200 ${
+                      language === 'fr' ? 'text-blue-400 bg-gray-700' : 'text-gray-300'
+                    }`}
+                  >
+                    Français
+                  </button>
+                </div>
+              )}
+            </div>
+
             {isAuthenticated ? (
               <>
                 <Link
@@ -105,8 +159,51 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="lg:hidden">
+          {/* Mobile Controls */}
+          <div className="lg:hidden flex items-center space-x-2">
+            {/* Theme Toggle Mobile */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800 transition-all duration-200"
+              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            >
+              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
+
+            {/* Language Selector Mobile */}
+            <div className="relative">
+              <button
+                onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
+                className="flex items-center gap-1 p-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800 transition-all duration-200"
+                title="Change language"
+              >
+                <Globe size={18} />
+                <span className="text-xs font-medium">{language.toUpperCase()}</span>
+              </button>
+
+              {isLanguageMenuOpen && (
+                <div className="absolute right-0 mt-2 w-28 bg-gray-800 border border-gray-700 rounded-lg shadow-lg py-1 z-50">
+                  <button
+                    onClick={() => handleLanguageChange('en')}
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-700 transition-colors duration-200 ${
+                      language === 'en' ? 'text-blue-400 bg-gray-700' : 'text-gray-300'
+                    }`}
+                  >
+                    EN
+                  </button>
+                  <button
+                    onClick={() => handleLanguageChange('fr')}
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-700 transition-colors duration-200 ${
+                      language === 'fr' ? 'text-blue-400 bg-gray-700' : 'text-gray-300'
+                    }`}
+                  >
+                    FR
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile menu button */}
             <button
               onClick={toggleMobileMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600 transition-colors duration-200"

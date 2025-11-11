@@ -8,12 +8,14 @@ import Footer from "../../Components/Footer";
 import GoogleAuth from "../../Components/GoogleAuth";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { API_BASE_URL } from "../../lib/constants.js";
+import { useTranslation } from "react-i18next";
 
 const Registration = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -77,7 +79,7 @@ const Registration = () => {
           <div className="w-full lg:w-1/2 bg-white rounded-2xl shadow-xl p-8 space-y-6 border border-gray-100">
             <h2 className="text-2xl font-bold text-center mb-6 text-black flex items-center justify-center gap-2">
               <Sparkles className="text-yellow-500" size={24} />
-              Create your account
+              {t("Create your account")}
             </h2>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-black">
@@ -87,7 +89,7 @@ const Registration = () => {
                   className="block text-sm font-medium text-black mb-2 flex items-center gap-2"
                 >
                   <FaUser className="text-blue-500" />
-                  Username
+                  {t("Name")}
                 </label>
                 <input
                   {...register("username", {
@@ -111,7 +113,7 @@ const Registration = () => {
                   className="block text-sm font-medium text-black mb-2 flex items-center gap-2"
                 >
                   <FaEnvelope className="text-blue-500" />
-                  Your email
+                  {t("Email")}
                 </label>
                 <input
                   {...register("email", {
@@ -137,7 +139,7 @@ const Registration = () => {
                     className="block text-sm font-medium text-black mb-2 flex items-center gap-2"
                   >
                     <FaLock className="text-blue-500" />
-                    Password
+                    {t("Password")}
                   </label>
                 </div>
                 <div className="relative">
@@ -179,7 +181,7 @@ const Registration = () => {
                     </div>
                   ) : (
                     <div className="flex items-center justify-center gap-2">
-                      Sign up
+                      {t("Register")}
                       <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" size={16} />
                     </div>
                   )}
@@ -191,9 +193,9 @@ const Registration = () => {
               </div>
 
               <p className="text-sm text-center mt-4 text-gray-600">
-                Already have an account?{" "}
+                {t("Already have an account?")}{" "}
                 <Link to="/login" className="text-gray-900 hover:text-gray-700 font-medium transition-colors duration-200 hover:underline">
-                  Login here
+                  {t("Login here")}
                 </Link>
               </p>
             </form>

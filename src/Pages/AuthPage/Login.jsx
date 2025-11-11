@@ -11,6 +11,7 @@ import GoogleAuth from "../../Components/GoogleAuth";
 import ForgotPass from "../../Components/PasswordReset/ForgotPassword";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { API_BASE_URL } from "../../lib/constants.js";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -18,6 +19,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setRefetchCurrentUser } = useAuth();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -84,17 +86,17 @@ const Login = () => {
           <div className="flex flex-col justify-center items-start w-full lg:w-1/2">
             <Sparkles className="text-yellow-500 mb-4" size={48} />
             <h1 className="text-4xl font-bold text-center lg:text-left text-gray-900 mb-4">
-              Welcome Back
+              {t("Welcome Back")}
             </h1>
             <p className="text-lg text-center lg:text-left text-gray-600 mb-8">
-              Log in to continue to your dashboard
+              {t("Log in to continue to your dashboard")}
             </p>
           </div>
 
           <div className="w-full lg:w-1/2 bg-white rounded-2xl shadow-xl p-8 space-y-6 border border-gray-100">
             <h2 className="text-2xl font-bold text-center mb-6 3xl:text-4xl text-black flex items-center justify-center gap-2">
               <FaLock className="text-blue-500" />
-              Login
+              {t("Login")}
             </h2>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -104,7 +106,7 @@ const Login = () => {
                   className="block text-sm font-medium text-gray-900 mb-2 3xl:text-xl flex items-center gap-2"
                 >
                   <FaEnvelope className="text-blue-500" />
-                  Email
+                  {t("Email")}
                 </label>
                 <input
                   {...register("email", { required: "Email is required" })}
@@ -127,7 +129,7 @@ const Login = () => {
                   className="block text-sm font-medium text-gray-900 mb-2 3xl:text-xl flex items-center gap-2"
                 >
                   <FaLock className="text-blue-500" />
-                  Password
+                  {t("Password")}
                 </label>
                 <ForgotPass />
                 </div>
@@ -171,7 +173,7 @@ const Login = () => {
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
-                      Log in
+                      {t("Log in")}
                       <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" size={16} />
                     </div>
                   )}
@@ -183,9 +185,9 @@ const Login = () => {
               </div>
 
               <p className="text-sm text-center mt-4 text-gray-600">
-                Don't have an account?{" "}
+                {t("Don't have an account?")}{" "}
                 <Link to="/register" className="text-gray-900 hover:text-gray-700 font-medium transition-colors duration-200 hover:underline">
-                  Sign up here
+                  {t("Sign up here")}
                 </Link>
               </p>
             </form>

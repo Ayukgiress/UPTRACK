@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import Registrations from './Pages/AuthPage/Registrations'
 import { AuthProvider } from './Pages/AuthContext'
+import { ThemeProvider } from './Components/ThemeContext'
 import VerifyEmail from './Components/VerifyEmail'
 import VerifyEmails from './Components/VerifyEmails'
 import Dashboard from './Pages/Dashboard'
@@ -32,6 +33,12 @@ import PasswordReset from './Pages/Password/ResetToken'
 import PasswordResetRequest from './Pages/Password/ResetPassword'
 import AcceptInvitation from './Pages/AcceptInvitation'
 import FloatingChatIcon from './Components/FloatingChatIcon'
+import Narbar from './Components/Narbar'
+
+function ConditionalNarbar() {
+  const location = useLocation();
+  return location.pathname === '/' ? <Narbar /> : null;
+}
 
 
 function AppContent() {
@@ -39,6 +46,7 @@ function AppContent() {
 
   return (
     <Router>
+        <ConditionalNarbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -68,10 +76,12 @@ function AppContent() {
 
 function App() {
   return (
-   < AuthProvider>
+   <ThemeProvider>
+     <AuthProvider>
          <Toaster richColors />
          <AppContent />
       </AuthProvider>
+   </ThemeProvider>
 
   )
 }
