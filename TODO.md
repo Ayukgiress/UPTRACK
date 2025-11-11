@@ -1,2 +1,3 @@
 - [x] Update modal background in EditTodoModal.jsx to use dark:bg-gray-900 for dark mode and bg-white for light mode
 - [x] Update modal background in Todo.jsx to use dark:bg-gray-900 for dark mode and bg-white for light mode
+- [x] Replace hardcoded localhost URLs with API_BASE_URL in EditTodoModal.jsx, Todo.jsx, and Pending.jsx

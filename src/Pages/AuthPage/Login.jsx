@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Narbar from "../../Components/Narbar";
-import Footer from "../../Components/Footer";
+// import Narbar from "../../Components/Narbar";
+// import Footer from "../../Components/Footer";
 import { FaEye, FaEyeSlash, FaEnvelope, FaLock } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";

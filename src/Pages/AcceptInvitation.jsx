@@ -38,6 +38,8 @@ const AcceptInvitation = () => {
           }
         }
       );
+
+         
       
       console.log('Response:', response.data);
       const projectData = response.data.project || response.data;

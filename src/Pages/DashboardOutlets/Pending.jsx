@@ -75,7 +75,7 @@ const Pending = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/todos/api/todos/${todo._id}`,
+        `${API_BASE_URL}/todos/api/todos/${todo._id}`,
         updatedTodo,
         {
           headers: {
@@ -99,7 +99,7 @@ const Pending = () => {
     if (!token) return;
 
     try {
-      await axios.delete(`http://localhost:5000/todos/api/todos/${todoId}`, {
+      await axios.delete(`${API_BASE_URL}/todos/api/todos/${todoId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -128,7 +128,7 @@ const Pending = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/todos/api/todos/edit/${updatedTodo._id}`,
+        `${API_BASE_URL}/todos/api/todos/edit/${updatedTodo._id}`,
         updatedTodo,
         {
           headers: {
@@ -162,7 +162,7 @@ const Pending = () => {
       updatedSubtodos[subtaskIndex].completed = !updatedSubtodos[subtaskIndex].completed;
 
       const response = await axios.put(
-        `http://localhost:5000/todos/api/todos/${todoId}`,
+        `${API_BASE_URL}/todos/api/todos/${todoId}`,
         {
           ...todoToUpdate,
           subtodos: updatedSubtodos

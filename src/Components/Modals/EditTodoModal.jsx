@@ -3,6 +3,7 @@ import axios from 'axios';
 import { X, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '../../Pages/AuthContext';
+import { API_BASE_URL } from '../../lib/constants';
 
 const EditTodoModal = ({ isOpen, onClose, todo, onEditTodo }) => {
   const { currentUser } = useAuth();
@@ -61,7 +62,7 @@ const EditTodoModal = ({ isOpen, onClose, todo, onEditTodo }) => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/projects/api/projects/${currentUser._id}`,
+        `${API_BASE_URL}/projects/api/projects/${currentUser._id}`,
         {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
