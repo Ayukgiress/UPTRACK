@@ -38,19 +38,17 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed w-full top-0 left-0 z-50 bg-gray-900/95 backdrop-blur-md border-b border-gray-800 shadow-sm">
+    <nav className="fixed w-full top-0 left-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm dark:bg-gray-900/95 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 lg:h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              <img
-                src="/images/Untitled design (1).png"
-                alt="UpTrack Logo"
-                className="h-10 w-auto lg:h-12 rounded-2xl text-2xl"
-              />
-              <span className="ml-2 text-xl lg:text-2xl  font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Tasky.Dev
+              <div className="h-10 w-10 lg:h-12 lg:w-12 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+                <span className="text-white font-bold text-lg lg:text-xl">U</span>
+              </div>
+              <span className="ml-2 text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent dark:from-blue-300 dark:to-purple-300">
+                UPTRACK
               </span>
             </Link>
           </div>
@@ -59,25 +57,25 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center space-x-8">
             <Link
               to="/"
-              className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200"
+              className="text-foreground hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-white"
             >
               Home
             </Link>
             <button
               onClick={() => scrollToSection('features')}
-              className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200"
+              className="text-foreground hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-white"
             >
               Features
             </button>
             <button
               onClick={() => scrollToSection('about')}
-              className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200"
+              className="text-foreground hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-white"
             >
               About
             </button>
             <button
               onClick={() => scrollToSection('contact')}
-              className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200"
+              className="text-muted-foreground hover:text-yellow-300 px-3 py-2 text-sm font-semibold transition-colors duration-300 dark:text-gray-400 dark:hover:text-yellow-300"
             >
               Contact
             </button>
@@ -85,7 +83,7 @@ const Navbar = () => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800 transition-all duration-200"
+              className="p-2 text-muted-foreground hover:text-yellow-300 rounded-lg hover:bg-yellow-900/30 transition-all duration-300 dark:text-gray-400 dark:hover:text-yellow-300 dark:hover:bg-yellow-900/30"
               title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             >
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
@@ -95,28 +93,28 @@ const Navbar = () => {
             <div className="relative">
               <button
                 onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
-                className="flex items-center gap-2 p-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800 transition-all duration-200"
+                className="flex items-center gap-2 p-2 text-muted-foreground hover:text-yellow-300 rounded-lg hover:bg-yellow-900/30 transition-all duration-300 dark:text-gray-400 dark:hover:text-yellow-300 dark:hover:bg-yellow-900/30"
                 title="Change language"
               >
                 <Globe size={20} />
-                <span className="text-sm font-medium">{language.toUpperCase()}</span>
+                <span className="text-sm font-semibold">{language.toUpperCase()}</span>
                 <ChevronDown size={16} className={`transition-transform duration-200 ${isLanguageMenuOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {isLanguageMenuOpen && (
-                <div className="absolute right-0 mt-2 w-32 bg-gray-800 border border-gray-700 rounded-lg shadow-lg py-1 z-50">
+                <div className="absolute right-0 mt-2 w-32 bg-yellow-900/80 border border-yellow-600 rounded-lg shadow-lg py-1 z-50 dark:bg-yellow-900/80 dark:border-yellow-600">
                   <button
                     onClick={() => handleLanguageChange('en')}
-                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors duration-200 ${
-                      language === 'en' ? 'text-blue-400 bg-gray-700' : 'text-gray-300'
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-yellow-800 transition-colors duration-200 ${
+                      language === 'en' ? 'text-yellow-400 bg-yellow-800' : 'text-yellow-300'
                     }`}
                   >
                     English
                   </button>
                   <button
                     onClick={() => handleLanguageChange('fr')}
-                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors duration-200 ${
-                      language === 'fr' ? 'text-blue-400 bg-gray-700' : 'text-gray-300'
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-yellow-800 transition-colors duration-200 ${
+                      language === 'fr' ? 'text-yellow-400 bg-yellow-800' : 'text-yellow-300'
                     }`}
                   >
                     Français
@@ -129,13 +127,13 @@ const Navbar = () => {
               <>
                 <Link
                   to="/dashboard"
-                  className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors duration-200"
+                  className="text-foreground hover:text-yellow-300 px-3 py-2 text-sm font-semibold transition-colors duration-300 dark:text-gray-300 dark:hover:text-yellow-300"
                 >
                   Dashboard
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-900/50 rounded-lg transition-all duration-200"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-red-400 hover:text-red-300 hover:bg-red-900/70 rounded-lg transition-all duration-300 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/70"
                 >
                   <LogOut size={18} />
                   <span>Logout</span>
@@ -145,13 +143,13 @@ const Navbar = () => {
               <>
                 <Link
                   to="/register"
-                  className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-all duration-200"
+                  className="px-4 py-2 text-sm font-semibold text-yellow-300 hover:text-white hover:bg-yellow-600 rounded-lg transition-all duration-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-600"
                 >
                   Sign Up
                 </Link>
                 <Link
                   to="/login"
-                  className="px-6 py-2 text-sm font-medium text-white bg-gray-700 hover:bg-gray-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+                  className="px-6 py-2 text-sm font-semibold text-yellow-300 bg-yellow-900 hover:bg-yellow-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 dark:text-yellow-300 dark:bg-yellow-900 dark:hover:bg-yellow-800"
                 >
                   Sign In
                 </Link>
@@ -164,7 +162,7 @@ const Navbar = () => {
             {/* Theme Toggle Mobile */}
             <button
               onClick={toggleTheme}
-              className="p-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800 transition-all duration-200"
+              className="p-2 text-muted-foreground hover:text-yellow-300 rounded-lg hover:bg-yellow-900/30 transition-all duration-300 dark:text-gray-400 dark:hover:text-yellow-300 dark:hover:bg-yellow-900/30"
               title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             >
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
@@ -174,27 +172,27 @@ const Navbar = () => {
             <div className="relative">
               <button
                 onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
-                className="flex items-center gap-1 p-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800 transition-all duration-200"
+                className="flex items-center gap-1 p-2 text-muted-foreground hover:text-yellow-300 rounded-lg hover:bg-yellow-900/30 transition-all duration-300 dark:text-gray-400 dark:hover:text-yellow-300 dark:hover:bg-yellow-900/30"
                 title="Change language"
               >
                 <Globe size={18} />
-                <span className="text-xs font-medium">{language.toUpperCase()}</span>
+                <span className="text-xs font-semibold">{language.toUpperCase()}</span>
               </button>
 
               {isLanguageMenuOpen && (
-                <div className="absolute right-0 mt-2 w-28 bg-gray-800 border border-gray-700 rounded-lg shadow-lg py-1 z-50">
+                <div className="absolute right-0 mt-2 w-28 bg-yellow-900/80 border border-yellow-600 rounded-lg shadow-lg py-1 z-50 dark:bg-yellow-900/80 dark:border-yellow-600">
                   <button
                     onClick={() => handleLanguageChange('en')}
-                    className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-700 transition-colors duration-200 ${
-                      language === 'en' ? 'text-blue-400 bg-gray-700' : 'text-gray-300'
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-yellow-800 transition-colors duration-200 ${
+                      language === 'en' ? 'text-yellow-400 bg-yellow-800' : 'text-yellow-300'
                     }`}
                   >
                     EN
                   </button>
                   <button
                     onClick={() => handleLanguageChange('fr')}
-                    className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-700 transition-colors duration-200 ${
-                      language === 'fr' ? 'text-blue-400 bg-gray-700' : 'text-gray-300'
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-yellow-800 transition-colors duration-200 ${
+                      language === 'fr' ? 'text-yellow-400 bg-yellow-800' : 'text-yellow-300'
                     }`}
                   >
                     FR
@@ -206,7 +204,7 @@ const Navbar = () => {
             {/* Mobile menu button */}
             <button
               onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600 transition-colors duration-200"
+              className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-yellow-300 hover:bg-yellow-900/30 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-yellow-600 transition-colors duration-300 dark:text-gray-400 dark:hover:text-yellow-300 dark:hover:bg-yellow-900/30 dark:focus:ring-yellow-600"
               aria-expanded="false"
             >
               {isMobileMenuOpen ? (
@@ -221,29 +219,29 @@ const Navbar = () => {
 
       {/* Mobile Navigation */}
       <div className={`lg:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
-        <div className="px-2 pt-2 pb-3 space-y-1 bg-gray-900 border-t border-gray-800 shadow-lg">
+        <div className="px-2 pt-2 pb-3 space-y-1 bg-background border-t border-border shadow-lg dark:bg-gray-900 dark:border-gray-800">
           <Link
             to="/"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md transition-colors duration-200"
+            className="block px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors duration-200 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800"
           >
             Home
           </Link>
           <button
             onClick={() => scrollToSection('features')}
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md transition-colors duration-200"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors duration-200 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800"
           >
             Features
           </button>
           <button
             onClick={() => scrollToSection('about')}
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md transition-colors duration-200"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors duration-200 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800"
           >
             About
           </button>
           <button
             onClick={() => scrollToSection('contact')}
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md transition-colors duration-200"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors duration-200 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800"
           >
             Contact
           </button>
@@ -253,13 +251,13 @@ const Navbar = () => {
               <Link
                 to="/dashboard"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md transition-colors duration-200"
+                className="block px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors duration-200 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800"
               >
                 Dashboard
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 w-full px-3 py-2 text-base font-medium text-red-400 hover:text-red-300 hover:bg-red-900/50 rounded-md transition-colors duration-200"
+                className="flex items-center gap-2 w-full px-3 py-2 text-base font-medium text-red-400 hover:text-red-300 hover:bg-red-900/50 rounded-md transition-colors duration-200 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/50"
               >
                 <LogOut size={18} />
                 <span>Logout</span>
@@ -270,14 +268,14 @@ const Navbar = () => {
               <Link
                 to="/register"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md transition-colors duration-200"
+                className="block px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors duration-200 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800"
               >
                 Sign Up
               </Link>
               <Link
                 to="/login"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-2 text-base font-medium text-white bg-gray-700 hover:bg-gray-600 rounded-md shadow-md transition-all duration-200 text-center"
+                className="block px-3 py-2 text-base font-medium text-primary bg-muted hover:bg-muted/80 rounded-md shadow-md transition-all duration-200 text-center dark:text-white dark:bg-gray-700 dark:hover:bg-gray-600"
               >
                 Sign In
               </Link>

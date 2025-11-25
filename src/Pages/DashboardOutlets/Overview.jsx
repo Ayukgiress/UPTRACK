@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../AuthContext";
-import { CheckCircle, Clock, List, Circle, Trash2, MessageCircle, X, Send } from "lucide-react";
+import { CheckCircle, Clock, List, Circle, Trash2, MessageCircle, X, Send, User, Users } from "lucide-react";
 import TodoModal from "../../Components/Modals/Todo";
 import { toast } from "sonner";
 import EditTodoModal from "../../Components/Modals/EditTodoModal";
@@ -12,6 +12,7 @@ import ChatContainer from "../../Components/ChatContainer";
 import NoChatSelected from "../../Components/NoChatSelected";
 import { API_BASE_URL } from "../../lib/constants";
 import { useLocation } from 'react-router-dom';
+import { groupTodosByTypeAndPriority } from "../../lib/utils";
 
 const Overview = () => {
   const { t } = useTranslation();
@@ -391,8 +392,20 @@ const Overview = () => {
 
 
 
-  const remainingTodos = todos.filter((todo) => !todo.completed);
-  const completedTodosList = todos.filter((todo) => todo.completed);
+  const priorityOrder = { high: 0, medium: 1, low: 2 };
+  
+  const sortedTodos = todos.sort((a, b) => {
+    if (a.completed !== b.completed) {
+      return a.completed ? 1 : -1;
+    }
+    return (priorityOrder[a.priority] || 999) - (priorityOrder[b.priority] || 999);
+  });
+
+  const remainingTodos = sortedTodos.filter((todo) => !todo.completed);
+  const completedTodosList = sortedTodos.filter((todo) => todo.completed);
+
+  const personalTodos = remainingTodos.filter((todo) => todo.taskType === 'personal');
+  const groupTodos = remainingTodos.filter((todo) => todo.taskType === 'project');
 
   return (
     <div className="w-full space-y-8 relative">
@@ -586,127 +599,197 @@ const Overview = () => {
 
       <div className="bg-card rounded-2xl shadow-lg border border-border p-8">
         <h3 className="text-2xl font-bold text-card-foreground mb-6">{t('Your Tasks')}</h3>
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {todos.map((todo, index) => (
-            <div
-              key={todo._id}
-              className={`group relative p-6 rounded-2xl transition-all duration-300 border-2 hover:shadow-xl hover:scale-[1.02] cursor-pointer
-                ${todo.completed
-                  ? "bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 hover:border-green-300"
-                  : "bg-card border-border hover:border-blue-300 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50"
-                }`}
-            >
-              {/* Priority indicator */}
-              <div className={`absolute top-4 right-4 w-3 h-3 rounded-full
-                ${todo.priority === "high" ? "bg-red-500" :
-                  todo.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}>
-              </div>
-
-              {/* Completion status */}
-              <div className="flex items-start justify-between mb-4">
-                <button
-                  onClick={() => toggleTodoCompletion(index)}
-                  disabled={completingTodos.has(todo._id)}
-                  className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-200
-                    ${todo.completed
-                      ? "bg-green-500 border-green-500 text-white"
-                      : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
-                    } ${completingTodos.has(todo._id) ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  {completingTodos.has(todo._id) ? (
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                  ) : todo.completed ? (
-                    <CheckCircle className="w-5 h-5" />
-                  ) : null}
-                </button>
-
-                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <button
-                    onClick={() => handleOpenEditModal(todo)}
-                    className="p-2 text-primary hover:bg-primary/10 dark:hover:bg-primary/20 rounded-lg transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => handleDeleteTodo(todo._id)}
-                    className="p-2 text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 rounded-lg transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Task content */}
-              <div className="space-y-3">
-                <h4 className={`font-bold text-lg leading-tight
-                  ${todo.completed ? "text-green-800 line-through" : "text-card-foreground"}`}>
-                  {todo.title}
-                </h4>
-
-                {todo.description && (
-                  <p className={`text-sm leading-relaxed
-                    ${todo.completed ? "text-green-600 line-through" : "text-muted-foreground"}`}>
-                    {todo.description}
-                  </p>
-                )}
-
-                {/* Task metadata */}
-                <div className="flex items-center justify-between pt-2 border-t border-border">
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    {todo.dueDate && (
-                      <div className="flex items-center gap-1">
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <span>{new Date(todo.dueDate).toLocaleDateString()}</span>
+        {todos.length === 0 ? (
+          <div className="py-12 text-center">
+            <List className="w-16 h-16 text-muted-foreground mb-4 mx-auto" />
+            <p className="text-muted-foreground">{t('No tasks available')}</p>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {(() => {
+              const grouped = groupTodosByTypeAndPriority(todos);
+              return (
+                <>
+                  {grouped.personal.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                        <h3 className="text-lg font-semibold text-card-foreground">Personal Tasks</h3>
+                        <span className="text-xs text-muted-foreground">({grouped.personal.length})</span>
                       </div>
-                    )}
-
-                    {todo.subtodos && todo.subtodos.length > 0 && (
-                      <div className="flex items-center gap-1">
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        <span>{todo.subtodos.length} subtasks</span>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {grouped.personal.map((todo) => (
+                          <OverviewTodoCard 
+                            key={todo._id} 
+                            todo={todo}
+                            canComplete={!todo.subtodos || todo.subtodos.every(st => st.completed)}
+                            onToggleCompletion={toggleTodoCompletion}
+                            onOpenEditModal={handleOpenEditModal}
+                            onDeleteTodo={handleDeleteTodo}
+                            completingTodos={completingTodos}
+                            t={t}
+                          />
+                        ))}
                       </div>
-                    )}
-                  </div>
-
-                  {/* Priority badge */}
-                  {todo.priority && (
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium text-white
-                      ${todo.priority === "high" ? "bg-red-500" :
-                        todo.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}>
-                      {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}
-                    </span>
+                    </div>
                   )}
-                </div>
-              </div>
-
-              {/* Subtasks section */}
-              {todo.subtodos && todo.subtodos.length > 0 && (
-                <div className="mt-4 pt-3 border-t border-border">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                    <span>Subtasks</span>
-                    <span>{todo.subtodos.filter(st => st.completed).length}/{todo.subtodos.length}</span>
-                  </div>
-                  <div className="space-y-2">
-                    {todo.subtodos.map((subtask, subIndex) => (
-                      <div key={subIndex} className="flex items-center gap-2">
-                        <span className={`text-sm flex-1 ${subtask.completed ? "line-through text-muted-foreground" : "text-card-foreground"}`}>
-                          {subtask.title}
-                        </span>
+                  {grouped.group.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                        <h3 className="text-lg font-semibold text-card-foreground">Group Tasks</h3>
+                        <span className="text-xs text-muted-foreground">({grouped.group.length})</span>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {grouped.group.map((todo) => (
+                          <OverviewTodoCard 
+                            key={todo._id} 
+                            todo={todo}
+                            canComplete={!todo.subtodos || todo.subtodos.every(st => st.completed)}
+                            onToggleCompletion={toggleTodoCompletion}
+                            onOpenEditModal={handleOpenEditModal}
+                            onDeleteTodo={handleDeleteTodo}
+                            completingTodos={completingTodos}
+                            t={t}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const OverviewTodoCard = ({ todo, canComplete, onToggleCompletion, onOpenEditModal, onDeleteTodo, completingTodos, t }) => {
+  return (
+    <div
+      onClick={() => {
+        window.location.href = `/todo/${todo._id}?email=${todo.assignedTo || todo.createdBy}`;
+      }}
+      className={`group relative p-6 rounded-2xl transition-all duration-300 border-2 hover:shadow-xl hover:scale-[1.02] cursor-pointer ${
+        todo.completed
+          ? "bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 hover:border-green-300"
+          : "bg-card border-border hover:border-blue-300 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50"
+        }`}
+    >
+      <div className={`absolute top-4 right-4 w-3 h-3 rounded-full ${todo.priority === "high" ? "bg-red-500" : todo.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}>
+      </div>
+
+      <div className="flex items-start justify-between mb-4">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!canComplete) {
+              alert('Complete all subtasks before marking the todo as complete');
+              return;
+            }
+            onToggleCompletion(todo);
+          }}
+          disabled={completingTodos.has(todo._id)}
+          className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-200
+            ${todo.completed
+              ? "bg-green-500 border-green-500 text-white"
+              : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+            } ${completingTodos.has(todo._id) ? "opacity-50 cursor-not-allowed" : ""}`}
+        >
+          {completingTodos.has(todo._id) ? (
+            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+          ) : todo.completed ? (
+            <CheckCircle className="w-5 h-5" />
+          ) : null}
+        </button>
+
+        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenEditModal(todo);
+            }}
+            className="p-2 text-primary hover:bg-primary/10 dark:hover:bg-primary/20 rounded-lg transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteTodo(todo._id);
+            }}
+            className="p-2 text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 rounded-lg transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
         </div>
       </div>
+
+      <div className="space-y-3">
+        <h4 className={`font-bold text-lg leading-tight
+          ${todo.completed ? "text-green-800 line-through" : "text-card-foreground"}`}>
+          {todo.title}
+        </h4>
+
+        {todo.description && (
+          <p className={`text-sm leading-relaxed
+            ${todo.completed ? "text-green-600 line-through" : "text-muted-foreground"}`}>
+            {todo.description}
+          </p>
+        )}
+
+        <div className="flex items-center justify-between pt-2 border-t border-border">
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            {todo.dueDate && (
+              <div className="flex items-center gap-1">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>{new Date(todo.dueDate).toLocaleDateString()}</span>
+              </div>
+            )}
+
+            {todo.subtodos && todo.subtodos.length > 0 && (
+              <div className="flex items-center gap-1">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <span>{todo.subtodos.length} subtasks</span>
+              </div>
+            )}
+          </div>
+
+          {todo.priority && (
+            <span className={`px-2 py-1 rounded-full text-xs font-medium text-white
+              ${todo.priority === "high" ? "bg-red-500" :
+                todo.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}>
+              {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {todo.subtodos && todo.subtodos.length > 0 && (
+        <div className="mt-4 pt-3 border-t border-border">
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+            <span>Subtasks</span>
+            <span>{todo.subtodos.filter(st => st.completed).length}/{todo.subtodos.length}</span>
+          </div>
+          <div className="space-y-2">
+            {todo.subtodos.map((subtask, subIndex) => (
+              <div key={subIndex} className="flex items-center gap-2">
+                <span className={`text-sm flex-1 ${subtask.completed ? "line-through text-muted-foreground" : "text-card-foreground"}`}>
+                  {subtask.title}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

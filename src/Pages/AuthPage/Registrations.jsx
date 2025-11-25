@@ -21,7 +21,10 @@ const Registration = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    trigger,
+  } = useForm({
+    mode: "onChange",  // Enable real-time validation
+  });
 
   useEffect(() => {
     // Store the redirect URL for after registration (for supervisor links)
@@ -116,20 +119,30 @@ const Registration = () => {
                   {t("Email")}
                 </label>
                 <input
-                  {...register("email", {
-                    required: "Email is required",
-                    pattern: /^[^@]+@[^@]+\.[^@]+$/,
-                  })}
-                  type="email"
-                  className="bg-gray-50 border border-gray-300 w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 text-base"
-                  placeholder="name@gmail.com"
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
-                    <span className="text-red-500">⚠️</span>
-                    {errors.email.message}
-                  </p>
-                )}
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email address",
+                  },
+                  validate: (value) => {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return emailRegex.test(value) || "Please enter a valid email address";
+                  }
+                })}
+                type="email"
+                className={`bg-gray-50 border w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 text-base ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+                placeholder="name@gmail.com"
+                onChange={async (e) => {
+                  await trigger("email");
+                }}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <span className="text-red-500">⚠️</span>
+                  {errors.email.message}
+                </p>
+              )}
               </div>
 
               <div>
@@ -189,7 +202,7 @@ const Registration = () => {
               </div>
 
               <div>
-                <GoogleAuth />
+              <GoogleAuth mode="signup" />
               </div>
 
               <p className="text-sm text-center mt-4 text-gray-600">

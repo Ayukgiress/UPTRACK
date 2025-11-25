@@ -75,6 +75,10 @@ function AppContent() {
 }
 
 function App() {
+  React.useEffect(() => {
+    document.title = "UPTRACK - Task Management Dashboard"; // Set project title in browser tab
+  }, []);
+
   return (
    <ThemeProvider>
      <AuthProvider>

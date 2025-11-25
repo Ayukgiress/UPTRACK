@@ -27,6 +27,11 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
     };
   }
 
+  const getMinDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
   useEffect(() => {
     if (isOpen && currentUser) {
       fetchProjects();
@@ -222,7 +227,7 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
               type="text"
               value={todo.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
-              className={`border rounded-lg p-2 w-full bg-white text-gray-900 placeholder-gray-500 ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
+              className={`border rounded-lg p-2 w-full bg-white text-gray-900 placeholder-gray-400 font-medium ${errors.title ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter todo title"
             />
             {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
@@ -231,7 +236,7 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
           <textarea
             value={todo.description}
             onChange={(e) => handleInputChange('description', e.target.value)}
-            className="border border-gray-300 rounded-lg p-2 w-full min-h-[100px] bg-white text-gray-900 placeholder-gray-500"
+            className="border border-gray-300 rounded-lg p-2 w-full min-h-[100px] bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter todo description (optional)"
           />
 
@@ -241,7 +246,7 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
               <select
                 value={todo.priority}
                 onChange={(e) => handleInputChange('priority', e.target.value)}
-                className="border border-gray-300 rounded-lg p-2 w-full bg-white text-gray-900"
+                className="border border-gray-300 rounded-lg p-2 w-full bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -254,8 +259,9 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
               <input
                 type="date"
                 value={todo.dueDate}
+                min={getMinDate()}
                 onChange={(e) => handleInputChange('dueDate', e.target.value)}
-                className={`border rounded-lg p-2 w-full bg-white text-gray-900 ${errors.dueDate ? 'border-red-500' : 'border-gray-300'}`}
+                className={`border rounded-lg p-2 w-full bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.dueDate ? 'border-red-500' : 'border-gray-300'}`}
               />
               {errors.dueDate && <p className="text-red-500 text-sm mt-1">{errors.dueDate}</p>}
             </div>
@@ -268,7 +274,7 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
                 <select
                   value={selectedProject}
                   onChange={(e) => handleProjectChange(e.target.value)}
-                  className={`border rounded-lg p-2 w-full bg-white text-gray-900 ${errors.project ? 'border-red-500' : 'border-gray-300'}`}
+                  className={`border rounded-lg p-2 w-full bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.project ? 'border-red-500' : 'border-gray-300'}`}
                 >
                   <option value="">Select a project</option>
                   {projects.map((project) => (
@@ -287,7 +293,7 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
                 <select
                   value={assignedTo}
                   onChange={(e) => setAssignedTo(e.target.value)}
-                  className={`border rounded-lg p-2 w-full bg-white text-gray-900 ${errors.assignedTo ? 'border-red-500' : 'border-gray-300'}`}
+                  className={`border rounded-lg p-2 w-full bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.assignedTo ? 'border-red-500' : 'border-gray-300'}`}
                 >
                   <option value="">Select a contributor</option>
                   {contributors.map((contributor) => (
@@ -308,7 +314,7 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
                 type="email"
                 value={supervisorEmail}
                 onChange={(e) => setSupervisorEmail(e.target.value)}
-                className={`border rounded-lg p-2 w-full bg-white text-gray-900 placeholder-gray-500 ${errors.supervisorEmail ? 'border-red-500' : 'border-gray-300'}`}
+                className={`border rounded-lg p-2 w-full bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.supervisorEmail ? 'border-red-500' : 'border-gray-300'}`}
                 placeholder="Enter supervisor email for invitation"
               />
               {errors.supervisorEmail && <p className="text-red-500 text-sm mt-1">{errors.supervisorEmail}</p>}
@@ -337,7 +343,7 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
                   type="text"
                   value={subtask.title}
                   onChange={(e) => updateSubtask(index, e.target.value)}
-                  className="border border-gray-300 rounded-lg p-2 flex-grow bg-white text-gray-900 placeholder-gray-500"
+                  className="border border-gray-300 rounded-lg p-2 flex-grow bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder={`Subtask ${index + 1}`}
                 />
                 <button

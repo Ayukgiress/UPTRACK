@@ -25,7 +25,10 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    trigger,
+  } = useForm({
+    mode: "onChange",
+  });
 
   useEffect(() => {
     // Store the current URL for redirect after login (for supervisor links)
@@ -109,10 +112,19 @@ const Login = () => {
                   {t("Email")}
                 </label>
                 <input
-                  {...register("email", { required: "Email is required" })}
+                  {...register("email", { 
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Invalid email address",
+                    },
+                  })}
                   type="email"
-                  className="bg-gray-50 border border-gray-300 w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                  className={`bg-gray-50 border w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
                   placeholder="name@gmail.com"
+                  onChange={async (e) => {
+                    await trigger("email");
+                  }}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
@@ -181,7 +193,7 @@ const Login = () => {
               </div>
 
               <div>
-                <GoogleAuth />
+              <GoogleAuth mode="login" />
               </div>
 
               <p className="text-sm text-center mt-4 text-gray-600">
