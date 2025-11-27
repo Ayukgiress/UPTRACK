@@ -619,14 +619,16 @@ const Overview = () => {
                       </div>
                       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                         {grouped.personal.map((todo) => (
-                          <OverviewTodoCard 
-                            key={todo._id} 
+                          <OverviewTodoCard
+                            key={todo._id}
                             todo={todo}
                             canComplete={!todo.subtodos || todo.subtodos.every(st => st.completed)}
                             onToggleCompletion={toggleTodoCompletion}
+                            onToggleSubtaskCompletion={toggleSubtaskCompletion}
                             onOpenEditModal={handleOpenEditModal}
                             onDeleteTodo={handleDeleteTodo}
                             completingTodos={completingTodos}
+                            updatingSubtasks={updatingSubtasks}
                             t={t}
                           />
                         ))}
@@ -642,14 +644,16 @@ const Overview = () => {
                       </div>
                       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                         {grouped.group.map((todo) => (
-                          <OverviewTodoCard 
-                            key={todo._id} 
+                          <OverviewTodoCard
+                            key={todo._id}
                             todo={todo}
                             canComplete={!todo.subtodos || todo.subtodos.every(st => st.completed)}
                             onToggleCompletion={toggleTodoCompletion}
+                            onToggleSubtaskCompletion={toggleSubtaskCompletion}
                             onOpenEditModal={handleOpenEditModal}
                             onDeleteTodo={handleDeleteTodo}
                             completingTodos={completingTodos}
+                            updatingSubtasks={updatingSubtasks}
                             t={t}
                           />
                         ))}
@@ -666,7 +670,7 @@ const Overview = () => {
   );
 };
 
-const OverviewTodoCard = ({ todo, canComplete, onToggleCompletion, onOpenEditModal, onDeleteTodo, completingTodos, t }) => {
+const OverviewTodoCard = ({ todo, canComplete, onToggleCompletion, onToggleSubtaskCompletion, onOpenEditModal, onDeleteTodo, completingTodos, updatingSubtasks, t }) => {
   return (
     <div
       onClick={() => {
@@ -782,6 +786,16 @@ const OverviewTodoCard = ({ todo, canComplete, onToggleCompletion, onOpenEditMod
           <div className="space-y-2">
             {todo.subtodos.map((subtask, subIndex) => (
               <div key={subIndex} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={subtask.completed}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    onToggleSubtaskCompletion(todo._id, subIndex);
+                  }}
+                  disabled={updatingSubtasks.has(`${todo._id}-${subIndex}`)}
+                  className="w-4 h-4 text-primary border-border focus:ring-primary focus:ring-2"
+                />
                 <span className={`text-sm flex-1 ${subtask.completed ? "line-through text-muted-foreground" : "text-card-foreground"}`}>
                   {subtask.title}
                 </span>
