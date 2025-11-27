@@ -16,7 +16,7 @@ export const useChatStore = create((set, get) => ({
         try {
             const token = localStorage.getItem('token');
 
-            const res = await axiosInstance.get(`/projects/api/project-contributors/${currentUser._id}`, {
+            const res = await axiosInstance.get(`/api/project-contributors/${currentUser._id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

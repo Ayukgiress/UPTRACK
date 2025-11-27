@@ -358,7 +358,7 @@ const Overview = () => {
 
       // Fetch project contributors directly from the API
       const response = await axios.get(
-        `${API_BASE_URL}/projects/api/project-contributors/${currentUser._id}`,
+        `${API_BASE_URL}/api/project-contributors/${currentUser._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
