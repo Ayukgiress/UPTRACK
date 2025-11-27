@@ -289,7 +289,7 @@ const Pending = () => {
   );
 };
 
-const TodoCard = ({ todo, canComplete, onToggleCompletion, onOpenEditModal, onDeleteTodo, t }) => {
+const TodoCard = ({ todo, canComplete, onToggleCompletion, onToggleSubtaskCompletion, onOpenEditModal, onDeleteTodo, t }) => {
   return (
     <div
       onClick={() => {
@@ -390,7 +390,7 @@ const TodoCard = ({ todo, canComplete, onToggleCompletion, onOpenEditModal, onDe
             {todo.subtodos.map((subtask, subIndex) => (
               <div key={subIndex} className="flex items-center gap-2">
                 <input
-                  type="radio"
+                  type="checkbox"
                   checked={subtask.completed}
                   onChange={(e) => {
                     e.stopPropagation();
