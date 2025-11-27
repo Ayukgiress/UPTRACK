@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../AuthContext";
+import { useNavigate } from "react-router-dom";
 import { Clock, Circle, Trash2, Users, User } from "lucide-react";
 import { toast } from "sonner";
 import EditTodoModal from "../../Components/Modals/EditTodoModal";
@@ -10,6 +11,7 @@ import { groupTodosByTypeAndPriority } from "../../lib/utils";
 
 const Pending = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [pendingTodos, setPendingTodos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { isAuthenticated, currentUser, currentUserLoading } = useAuth();
@@ -240,11 +242,12 @@ const Pending = () => {
                       </div>
                       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                         {grouped.personal.map((todo) => (
-                          <TodoCard 
-                            key={todo._id} 
+                          <TodoCard
+                            key={todo._id}
                             todo={todo}
                             canComplete={!todo.subtodos || todo.subtodos.every(st => st.completed)}
                             onToggleCompletion={toggleTodoCompletion}
+                            onToggleSubtaskCompletion={toggleSubtaskCompletion}
                             onOpenEditModal={handleOpenEditModal}
                             onDeleteTodo={handleDeleteTodo}
                             t={t}
@@ -262,11 +265,12 @@ const Pending = () => {
                       </div>
                       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                         {grouped.group.map((todo) => (
-                          <TodoCard 
-                            key={todo._id} 
+                          <TodoCard
+                            key={todo._id}
                             todo={todo}
                             canComplete={!todo.subtodos || todo.subtodos.every(st => st.completed)}
                             onToggleCompletion={toggleTodoCompletion}
+                            onToggleSubtaskCompletion={toggleSubtaskCompletion}
                             onOpenEditModal={handleOpenEditModal}
                             onDeleteTodo={handleDeleteTodo}
                             t={t}
@@ -289,7 +293,7 @@ const TodoCard = ({ todo, canComplete, onToggleCompletion, onOpenEditModal, onDe
   return (
     <div
       onClick={() => {
-        window.location.href = `/todo/${todo._id}?email=${todo.assignedTo || todo.createdBy}`;
+        navigate(`/todo/${todo._id}?email=${todo.assignedTo || todo.createdBy}`);
       }}
       className="group relative p-6 rounded-2xl transition-all duration-300 border-2 bg-card border-border hover:shadow-lg hover:scale-105 cursor-pointer"
     >
@@ -385,6 +389,15 @@ const TodoCard = ({ todo, canComplete, onToggleCompletion, onOpenEditModal, onDe
           <div className="space-y-2">
             {todo.subtodos.map((subtask, subIndex) => (
               <div key={subIndex} className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  checked={subtask.completed}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    onToggleSubtaskCompletion(todo._id, subIndex);
+                  }}
+                  className="w-4 h-4 text-primary border-border focus:ring-primary focus:ring-2"
+                />
                 <span className={`text-sm flex-1 ${subtask.completed ? "line-through text-muted-foreground" : "text-card-foreground"}`}>
                   {subtask.title}
                 </span>

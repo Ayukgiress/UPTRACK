@@ -564,94 +564,120 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section
-        className={`py-20 px-6 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}
-        id="stats-section"
-        data-animate
+{/* Stats Section */}
+<section
+  id="stats-section"
+  data-animate
+  className={`flex justify-center items-center min-h-screen py-20 px-6 ${
+    theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+  }`}
+>
+  <div className="w-full max-w-7xl mx-auto text-center">
+
+    {/* Heading */}
+    <div
+      className={`
+        mb-16 transition-all duration-1000 
+        ${isVisible["stats-section"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+      `}
+    >
+      <h2
+        className={`
+          text-4xl md:text-5xl font-bold mb-4 
+          ${theme === "dark" ? "text-white" : "text-gray-900"}
+        `}
       >
-        <div className="max-w-7xl mx-auto">
-          <div
-            className={`text-center mb-16 transition-all duration-1000 ${
-              isVisible["stats-section"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
-          >
-            <h2
-              className={`text-4xl md:text-5xl font-bold mb-4 ${
-                theme === "dark" ? "text-white" : "text-gray-900"
-              }`}
-            >
-              {t("Join Thousands of Success Stories").split(" Thousands ")[0]}
-              <span className={`block ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
-                {t("Join Thousands of Success Stories").split(" Thousands ")[1]}
-              </span>
-            </h2>
-            <p className={`text-xl ${theme === "dark" ? "text-gray-300" : "text-gray-600"} max-w-3xl mx-auto`}>
-              {t(
-                "Real results from real users who have transformed their productivity and achieved their goals with Tasky.Dev."
-              )}
-            </p>
-          </div>
+        {t("Join Thousands of Success Stories").split(" Thousands ")[0]}
+        <span className={`block ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+          {t("Join Thousands of Success Stories").split(" Thousands ")[1]}
+        </span>
+      </h2>
 
+      <p
+        className={`
+          text-xl max-w-3xl mx-auto
+          ${theme === "dark" ? "text-gray-300" : "text-gray-600"}
+        `}
+      >
+        {t(
+          "Real results from real users who have transformed their productivity and achieved their goals with Tasky.Dev."
+        )}
+      </p>
+    </div>
+
+    {/* Stats Grid */}
+    <div
+      className={`
+        grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 sm:gap-6 mx-auto
+        transition-all duration-1000
+        ${isVisible["stats-section"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+      `}
+    >
+      {statsData.map((stat, index) => {
+        const isActive = currentIndex === index;
+
+        return (
           <div
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 transition-all duration-1000 ${
-              isVisible["stats-section"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
+            key={index}
+            className={`
+              group relative w-full mx-auto rounded-2xl p-6 shadow-lg border overflow-hidden
+              transition-all duration-500 transform hover:scale-[1.04] sm:hover:scale-105
+              ${
+                theme === "dark"
+                  ? "bg-gray-800 border-gray-700 text-white"
+                  : "bg-gray-50 border-gray-200 text-gray-900"
+              }
+              ${isActive
+                ? theme === "dark"
+                  ? "ring-2 ring-gray-500 scale-[1.07]"
+                  : "ring-2 ring-gray-800 scale-[1.07]"
+                : "scale-100"
+              }
+            `}
           >
-            {statsData.map((stat, index) => (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+
+            <div className="relative z-10 text-center px-3">
               <div
-                key={index}
-                className={`group relative ${
-                  theme === "dark"
-                    ? "bg-gray-800 border-gray-700 text-white"
-                    : "bg-gray-50 border-gray-200 text-gray-900"
-                } rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border overflow-hidden ${
-                  currentIndex === index
-                    ? theme === "dark"
-                      ? "ring-2 ring-gray-500 scale-105"
-                      : "ring-2 ring-gray-800 scale-105"
-                    : "scale-100"
-                }`}
+                className={`
+                  ${stat.color} w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4
+                  transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110 shadow-lg
+                `}
               >
-                <div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
-                ></div>
+                <stat.icon size={28} strokeWidth={1.5} className="text-white" />
+              </div>
 
-                <div className="relative z-10 text-center">
-                  <div
-                    className={`${stat.color} w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 shadow-lg`}
-                  >
-                    <stat.icon className="text-white" size={28} strokeWidth={1.5} />
-                  </div>
-                  <h4 className="text-3xl font-bold mb-2">
-                    {animatedStats[index] !== undefined ? animatedStats[index] : stat.value}
-                    {stat.value.includes("+") && "+"}
-                  </h4>
-                  <p className="text-lg font-semibold mb-2">{stat.text}</p>
-                  <p className="text-sm leading-relaxed">{stat.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              <h4 className="text-3xl font-bold mb-2 leading-tight">
+                {animatedStats[index] ?? stat.value}
+                {stat.value.includes("+") && "+"}
+              </h4>
 
-          <div className={`mt-16 text-center ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-            <div className="flex flex-wrap justify-center items-center gap-8 text-sm">
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5" />
-                {t("Enterprise-grade security")}
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-5 h-5" />
-                {t("24/7 customer support")}
-              </div>
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
-                {t("Continuous improvements")}
-              </div>
+              <p className="text-lg font-semibold mb-2">{stat.text}</p>
+              <p className="text-sm leading-relaxed">{stat.description}</p>
             </div>
           </div>
+        );
+      })}
+    </div>
+
+    {/* Footer Icons */}
+    <div className={`mt-16 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+      <div className="flex flex-wrap justify-center items-center gap-8 text-sm">
+        <div className="flex items-center gap-2">
+          <Shield className="w-5 h-5" /> {t("Enterprise-grade security")}
         </div>
-      </section>
+        <div className="flex items-center gap-2">
+          <Clock className="w-5 h-5" /> {t("24/7 customer support")}
+        </div>
+        <div className="flex items-center gap-2">
+          <TrendingUp className="w-5 h-5" /> {t("Continuous improvements")}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 
       {/* About Section */}
       <section
@@ -751,29 +777,29 @@ const Home = () => {
       {/* Contact Section */}
       <section
         id="contact"
-        className={`py-20 px-6 ${theme === "dark" ? "bg-gray-800 text-white" : "bg-gray-50 text-gray-900"}`}
+        className={`py-20 px-4 sm:px-6 md:px-10 lg:px-20 xl:px-32 2xl:px-40 ${theme === "dark" ? "bg-gray-800 text-white" : "bg-gray-50 text-gray-900"}`}
       >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
               {t("Get In Touch")}
             </h2>
-            <p className={`text-xl ${theme === "dark" ? "text-gray-300" : "text-gray-600"} max-w-3xl mx-auto`}>
+            <p className={`text-base sm:text-lg md:text-xl ${theme === "dark" ? "text-gray-300" : "text-gray-600"} max-w-3xl mx-auto`}>
               {t("Have questions or need support? We'd love to hear from you. Reach out to our team and we'll get back to you as soon as possible.")}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+            <div className="space-y-6 lg:space-y-10 flex flex-col justify-start">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
                   <MapPin className="text-white" size={24} />
                 </div>
                 <div>
-                  <h3 className={`text-xl font-semibold mb-2 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+                  <h3 className={`text-lg sm:text-xl md:text-2xl font-semibold mb-1 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
                     {t("Our Location")}
                   </h3>
-                  <p className={`text-gray-600 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                  <p className={`text-sm sm:text-base md:text-lg ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
                     {t("Yaoundé, Jouvence")}
                     <br />
                     {t("Cameroon")}
@@ -785,10 +811,10 @@ const Home = () => {
                   <Phone className="text-white" size={24} />
                 </div>
                 <div>
-                  <h3 className={`text-xl font-semibold mb-2 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+                  <h3 className={`text-lg sm:text-xl md:text-2xl font-semibold mb-1 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
                     {t("Phone")}
                   </h3>
-                  <p className={`text-gray-600 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                  <p className={`text-sm sm:text-base md:text-lg ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
                     {t("+237 676 184 440")}
                   </p>
                 </div>
@@ -798,74 +824,74 @@ const Home = () => {
                   <Mail className="text-white" size={24} />
                 </div>
                 <div>
-                  <h3 className={`text-xl font-semibold mb-2 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+                  <h3 className={`text-lg sm:text-xl md:text-2xl font-semibold mb-1 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
                     {t("Email")}
                   </h3>
-                  <p className={`text-gray-600 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                  <p className={`text-sm sm:text-base md:text-lg ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
                     {t("tasky.dev@gmail.com")}
                   </p>
                 </div>
               </div>
+            </div>
 
-              <div className={`bg-white p-8 rounded-2xl shadow-xl ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
-                <h3 className={`text-2xl font-bold mb-6 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
-                  {t("Send us a Message")}
-                </h3>
-                <form onSubmit={handleContactSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">{t("First Name")}</label>
-                      <input
-                        type="text"
-                        name="firstName"
-                        value={contactForm.firstName}
-                        onChange={handleContactChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors"
-                        placeholder={t("Your first name")}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">{t("Last Name")}</label>
-                      <input
-                        type="text"
-                        name="lastName"
-                        value={contactForm.lastName}
-                        onChange={handleContactChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors"
-                        placeholder={t("Your last name")}
-                      />
-                    </div>
-                  </div>
+            <div className={`bg-white p-6 sm:p-8 md:p-12 rounded-2xl shadow-xl ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
+              <h3 className={`text-2xl font-bold mb-6 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+                {t("Send us a Message")}
+              </h3>
+              <form onSubmit={handleContactSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t("Email")}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t("First Name")}</label>
                     <input
-                      type="email"
-                      name="email"
-                      value={contactForm.email}
+                      type="text"
+                      name="firstName"
+                      value={contactForm.firstName}
                       onChange={handleContactChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors"
-                      placeholder={t("your@email.com")}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors text-gray-900"
+                      placeholder={t("Your first name")}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t("Message")}</label>
-                    <textarea
-                      name="message"
-                      rows={4}
-                      value={contactForm.message}
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t("Last Name")}</label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={contactForm.lastName}
                       onChange={handleContactChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors resize-none text-gray-900"
-                      placeholder={t("Tell us how we can help you...")}
-                    ></textarea>
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors text-gray-900"
+                      placeholder={t("Your last name")}
+                    />
                   </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-gray-900 text-white py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-semibold"
-                  >
-                    {t("Send Message")}
-                  </button>
-                </form>
-              </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t("Email")}</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={contactForm.email}
+                    onChange={handleContactChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors text-gray-900"
+                    placeholder={t("your@email.com")}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t("Message")}</label>
+                  <textarea
+                    name="message"
+                    rows={4}
+                    value={contactForm.message}
+                    onChange={handleContactChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-colors resize-none text-gray-900"
+                    placeholder={t("Tell us how we can help you...")}
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-gray-900 text-white py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-semibold"
+                >
+                  {t("Send Message")}
+                </button>
+              </form>
             </div>
           </div>
         </div>

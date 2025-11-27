@@ -3,12 +3,11 @@ import { FaEye, FaEyeSlash, FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import Narbar from "../../Components/Narbar";
-import Footer from "../../Components/Footer";
 import GoogleAuth from "../../Components/GoogleAuth";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { API_BASE_URL } from "../../lib/constants.js";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "../../Components/ThemeContext";
 
 const Registration = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -16,6 +15,7 @@ const Registration = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
+  const { theme } = useTheme();
 
   const {
     register,
@@ -76,20 +76,79 @@ const Registration = () => {
   };
 
   return (
-      <section className="bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="flex flex-col lg:flex-row items-center justify-center w-full max-w-7xl px-6 py-8 gap-12 lg:gap-24">
-          {/* Centered Content */}
-          <div className="w-full lg:w-1/2 bg-white rounded-2xl shadow-xl p-8 space-y-6 border border-gray-100">
-            <h2 className="text-2xl font-bold text-center mb-6 text-black flex items-center justify-center gap-2">
+    <div className={`min-h-screen ${
+      theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+    }`}>
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div
+          className={`absolute top-20 left-10 w-96 h-96 ${
+            theme === "dark" ? "bg-gray-700/30" : "bg-gray-200/30"
+          } rounded-full blur-3xl animate-pulse`}
+        ></div>
+        <div
+          className={`absolute bottom-20 right-10 w-80 h-80 ${
+            theme === "dark" ? "bg-gray-600/20" : "bg-gray-300/20"
+          } rounded-full blur-3xl animate-pulse delay-1000`}
+        ></div>
+        <div
+          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] ${
+            theme === "dark" ? "bg-gray-700/20" : "bg-gray-100/20"
+          } rounded-full blur-3xl`}
+        ></div>
+      </div>
+
+      <div className="relative z-10 max-w-md mx-auto px-4 py-20">
+        <div className="text-center mb-8">
+          <div
+            className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium mb-8 border ${
+              theme === "dark"
+                ? "bg-gray-700 text-gray-300 border-gray-600"
+                : "bg-gray-100 text-gray-700 border-gray-200"
+            }`}
+          >
+            <Sparkles
+              className={`w-4 h-4 mr-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}
+            />
+            Get Started
+          </div>
+
+          <h1
+            className={`text-3xl sm:text-4xl font-bold mb-4 ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            {t("Create Your Account")}
+          </h1>
+
+          <p
+            className={`text-lg mb-12 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}
+          >
+            {t("Join thousands of productivity enthusiasts")}
+          </p>
+        </div>
+
+        <div className={`rounded-2xl shadow-2xl p-8 border ${
+          theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"
+        }`}>
+          <div className="text-center mb-8">
+            <h2 className={`text-2xl font-bold flex items-center justify-center gap-2 ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}>
               <Sparkles className="text-yellow-500" size={24} />
               {t("Create your account")}
             </h2>
+          </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-black">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div>
                 <label
                   htmlFor="username"
-                  className="block text-sm font-medium text-black mb-2 flex items-center gap-2"
+                  className={`block text-sm font-medium mb-2 flex items-center gap-2 ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
                 >
                   <FaUser className="text-blue-500" />
                   {t("Name")}
@@ -99,8 +158,12 @@ const Registration = () => {
                     required: "Username is required",
                   })}
                   type="text"
-                  className="bg-gray-50 border border-gray-300 w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 text-base"
-                  placeholder="Username"
+                  className={`w-full p-3 rounded-lg border transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    theme === "dark"
+                      ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 hover:border-gray-500"
+                      : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 hover:border-gray-400"
+                  }`}
+                  placeholder="Enter your name"
                 />
                 {errors.username && (
                   <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
@@ -113,7 +176,9 @@ const Registration = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-black mb-2 flex items-center gap-2"
+                  className={`block text-sm font-medium mb-2 flex items-center gap-2 ${
+                    theme === "dark" ? "text-gray-300" : "text-black"
+                  }`}
                 >
                   <FaEnvelope className="text-blue-500" />
                   {t("Email")}
@@ -131,7 +196,11 @@ const Registration = () => {
                   }
                 })}
                 type="email"
-                className={`bg-gray-50 border w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 text-base ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+                className={`w-full p-3 rounded-lg border transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  theme === "dark"
+                    ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 hover:border-gray-500"
+                    : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 hover:border-gray-400"
+                } ${errors.email ? 'border-red-500' : ''}`}
                 placeholder="name@gmail.com"
                 onChange={async (e) => {
                   await trigger("email");
@@ -149,7 +218,9 @@ const Registration = () => {
                 <div className="flex items-center justify-between">
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-black mb-2 flex items-center gap-2"
+                    className={`block text-sm font-medium mb-2 flex items-center gap-2 ${
+                      theme === "dark" ? "text-gray-300" : "text-black"
+                    }`}
                   >
                     <FaLock className="text-blue-500" />
                     {t("Password")}
@@ -161,13 +232,19 @@ const Registration = () => {
                       required: "Password is required",
                     })}
                     type={passwordVisible ? "text" : "password"}
-                    className="bg-gray-50 border border-gray-300 w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 text-base"
+                    className={`w-full p-3 rounded-lg border transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      theme === "dark"
+                        ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 hover:border-gray-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 hover:border-gray-400"
+                    }`}
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setPasswordVisible(!passwordVisible)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-500 transition-colors duration-200"
+                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200 ${
+                      theme === "dark" ? "text-gray-400 hover:text-blue-400" : "text-gray-600 hover:text-blue-500"
+                    }`}
                   >
                     {passwordVisible ? <FaEyeSlash /> : <FaEye />}
                   </button>
@@ -212,11 +289,9 @@ const Registration = () => {
                 </Link>
               </p>
             </form>
-          </div>
         </div>
-      </section>
-
-   
+      </div>
+    </div>
   );
 };
 

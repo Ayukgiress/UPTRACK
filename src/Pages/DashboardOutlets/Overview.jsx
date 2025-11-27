@@ -128,7 +128,7 @@ const Overview = () => {
 
     if (new Date(newTodo.dueDate) < new Date()) {
       toast.error("Due date must be today or in the future.");
-      return;
+      throw new Error("Due date must be today or in the future.");
     }
 
     try {

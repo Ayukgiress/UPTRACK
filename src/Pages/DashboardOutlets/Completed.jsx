@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../AuthContext";
+import { useNavigate } from "react-router-dom";
 import { CheckCircle, Trash2, User, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from 'react-i18next';
@@ -184,10 +185,11 @@ const Completed = () => {
                       </div>
                       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                         {grouped.group.map((todo) => (
-                          <CompletedTodoCard 
-                            key={todo._id} 
+                          <CompletedTodoCard
+                            key={todo._id}
                             todo={todo}
                             onDeleteTodo={handleDeleteTodo}
+                            onToggleSubtaskCompletion={toggleSubtaskCompletion}
                             t={t}
                           />
                         ))}
@@ -204,11 +206,11 @@ const Completed = () => {
   );
 };
 
-const CompletedTodoCard = ({ todo, onDeleteTodo, t }) => {
+const CompletedTodoCard = ({ todo, onDeleteTodo, onToggleSubtaskCompletion, t }) => {
   return (
     <div
       onClick={() => {
-        window.location.href = `/todo/${todo._id}?email=${todo.assignedTo || todo.createdBy}`;
+        navigate(`/todo/${todo._id}?email=${todo.assignedTo || todo.createdBy}`);
       }}
       className="group relative p-6 rounded-2xl transition-all duration-300 border-2 bg-gradient-to-br from-green-50 dark:from-green-900/10 to-emerald-50 dark:to-emerald-900/10 border-green-200 dark:border-green-800 hover:border-green-300 dark:hover:border-green-700 hover:shadow-xl hover:scale-[1.02] cursor-pointer"
     >
@@ -286,6 +288,15 @@ const CompletedTodoCard = ({ todo, onDeleteTodo, t }) => {
           <div className="space-y-2">
             {todo.subtodos.map((subtask, subIndex) => (
               <div key={subIndex} className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  checked={subtask.completed}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    onToggleSubtaskCompletion(todo._id, subIndex);
+                  }}
+                  className="w-4 h-4 text-primary border-border focus:ring-primary focus:ring-2"
+                />
                 <span className={`text-sm flex-1 ${subtask.completed ? "line-through text-green-400 dark:text-green-500" : "text-green-700 dark:text-green-300"}`}>
                   {subtask.title}
                 </span>

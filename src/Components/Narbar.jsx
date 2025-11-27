@@ -30,6 +30,7 @@ const Navbar = () => {
     navigate('/');
     setIsMobileMenuOpen(false);
   };
+  
 
   const handleLanguageChange = (newLang) => {
     changeLanguage(newLang);
@@ -44,12 +45,15 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              <div className="h-10 w-10 lg:h-12 lg:w-12 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                <span className="text-white font-bold text-lg lg:text-xl">U</span>
+              
+              <div className='flex items-center justify-center gap-4'>
+                <img src="/public/images/Untitled design (1).png" alt="Tasky.dev              
+" className='flex items-center justify-center w-12 h-12 rounded-lg' />
+
+<span className='text-blue-700 text-2xl'>                 Tasky.dev              
+</span>
+
               </div>
-              <span className="ml-2 text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent dark:from-blue-300 dark:to-purple-300">
-                UPTRACK
-              </span>
             </Link>
           </div>
 

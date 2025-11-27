@@ -175,7 +175,7 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
         setTaskType('project');
         onClose();
       } catch (error) {
-        toast.error('Failed to add todo. Please try again.');
+        // Error is already handled in onAddTodos, so we don't need to show another toast
         console.error('Todo creation error:', error);
       } finally {
         setIsSubmitting(false);

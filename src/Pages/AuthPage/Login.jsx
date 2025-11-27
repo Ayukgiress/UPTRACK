@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import Narbar from "../../Components/Narbar";
-// import Footer from "../../Components/Footer";
 import { FaEye, FaEyeSlash, FaEnvelope, FaLock } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -12,6 +10,7 @@ import ForgotPass from "../../Components/PasswordReset/ForgotPassword";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { API_BASE_URL } from "../../lib/constants.js";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "../../Components/ThemeContext";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -20,6 +19,7 @@ const Login = () => {
   const location = useLocation();
   const { setRefetchCurrentUser } = useAuth();
   const { t } = useTranslation();
+  const { theme } = useTheme();
 
   const {
     register,
@@ -83,36 +83,74 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <section className="bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="flex flex-col lg:flex-row w-full max-w-7xl px-6 py-8 gap-12 lg:gap-24">
-          <div className="flex flex-col justify-center items-start w-full lg:w-1/2">
-            <Sparkles className="text-yellow-500 mb-4" size={48} />
-            <h1 className="text-4xl font-bold text-center lg:text-left text-gray-900 mb-4">
-              {t("Welcome Back")}
-            </h1>
-            <p className="text-lg text-center lg:text-left text-gray-600 mb-8">
-              {t("Log in to continue to your dashboard")}
-            </p>
-          </div>
+    <div className={`min-h-screen ${
+      theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+    }`}>
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div
+          className={`absolute top-20 left-10 w-96 h-96 ${
+            theme === "dark" ? "bg-gray-700/30" : "bg-gray-200/30"
+          } rounded-full blur-3xl animate-pulse`}
+        ></div>
+        <div
+          className={`absolute bottom-20 right-10 w-80 h-80 ${
+            theme === "dark" ? "bg-gray-600/20" : "bg-gray-300/20"
+          } rounded-full blur-3xl animate-pulse delay-1000`}
+        ></div>
+        <div
+          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] ${
+            theme === "dark" ? "bg-gray-700/20" : "bg-gray-100/20"
+          } rounded-full blur-3xl`}
+        ></div>
+      </div>
 
-          <div className="w-full lg:w-1/2 bg-white rounded-2xl shadow-xl p-8 space-y-6 border border-gray-100">
-            <h2 className="text-2xl font-bold text-center mb-6 3xl:text-4xl text-black flex items-center justify-center gap-2">
+      <div className="relative z-10 max-w-md mx-auto px-4 py-20">
+        <div className="text-center mb-8">
+         
+
+          <h1
+            className={`text-3xl sm:text-4xl font-bold mb-4 ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            {t("Sign In to Your Account")}
+          </h1>
+
+          <p
+            className={`text-lg mb-12 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}
+          >
+            {t("Log in to continue to your dashboard")}
+          </p>
+        </div>
+
+        <div className={`rounded-2xl shadow-2xl p-8 border ${
+          theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"
+        }`}>
+          <div className="text-center mb-8">
+            <h2 className={`text-2xl font-bold flex items-center justify-center gap-2 ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}>
               <FaLock className="text-blue-500" />
               {t("Login")}
             </h2>
+          </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-900 mb-2 3xl:text-xl flex items-center gap-2"
+                  className={`block text-sm font-medium mb-2 flex items-center gap-2 ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
                 >
                   <FaEnvelope className="text-blue-500" />
                   {t("Email")}
                 </label>
                 <input
-                  {...register("email", { 
+                  {...register("email", {
                     required: "Email is required",
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -120,7 +158,11 @@ const Login = () => {
                     },
                   })}
                   type="email"
-                  className={`bg-gray-50 border w-full p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+                  className={`w-full p-3 rounded-lg border transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    theme === "dark"
+                      ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 hover:border-gray-500"
+                      : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 hover:border-gray-400"
+                  } ${errors.email ? 'border-red-500' : ''}`}
                   placeholder="name@gmail.com"
                   onChange={async (e) => {
                     await trigger("email");
@@ -172,19 +214,23 @@ const Login = () => {
                 )}
               </div>
 
-              <div className="flex justify-center items-center">
+              <div className="pt-2">
                 <button
                   type="submit"
-                  className="flex h-[50px] w-full items-center justify-center bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group"
+                  className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 group ${
+                    theme === "dark"
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  }`}
                   disabled={loading}
                 >
                   {loading ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                       Logging in...
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center gap-2">
                       {t("Log in")}
                       <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" size={16} />
                     </div>
@@ -203,9 +249,8 @@ const Login = () => {
                 </Link>
               </p>
             </form>
-          </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

@@ -58,6 +58,7 @@ function AppContent() {
           <Route path="/reset-password/:token" element={<PasswordReset />} />
           <Route path="/password" element={<PasswordResetRequest/>} />
           <Route path="/projects/:projectId/accept-invitation" element={<AcceptInvitation />} />
+          <Route path="/todo/:id" element={<TodoDetail />} />
              <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<Overview />} />
             <Route path="settings" element={<Settings />} />
@@ -76,7 +77,7 @@ function AppContent() {
 
 function App() {
   React.useEffect(() => {
-    document.title = "UPTRACK - Task Management Dashboard"; // Set project title in browser tab
+    document.title = "Tasky.dev - Task Management Dashboard"; // Set project title in browser tab
   }, []);
 
   return (

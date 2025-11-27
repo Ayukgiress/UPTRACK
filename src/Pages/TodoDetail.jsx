@@ -114,15 +114,35 @@ const TodoDetail = () => {
                 <p className="text-gray-600 mt-3 text-lg">{todo.description}</p>
               )}
             </div>
-            {!todo.completed && (
-              <button
-                onClick={handleComplete}
-                className="bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
-              >
-                <CheckCircle size={18} />
-                Mark Complete
-              </button>
-            )}
+            {/*
+             Disable "Mark Complete" button if any subtasks are incomplete
+            */}
+            {(() => {
+              const allSubtasksCompleted = todo.subtodos ? todo.subtodos.every(st => st.completed) : true;
+              if (!todo.completed && allSubtasksCompleted) {
+                return (
+                  <button
+                    onClick={handleComplete}
+                    className="bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+                  >
+                    <CheckCircle size={18} />
+                    Mark Complete
+                  </button>
+                );
+              } else if (!todo.completed && !allSubtasksCompleted) {
+                return (
+                  <button
+                    disabled
+                    className="bg-gray-300 text-gray-600 px-6 py-3 rounded-xl cursor-not-allowed flex items-center gap-2"
+                    title="Complete all subtasks before marking as complete"
+                  >
+                    <CheckCircle size={18} />
+                    Mark Complete
+                  </button>
+                );
+              }
+              return null;
+            })()}
           </div>
 
           <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-8">
@@ -161,23 +181,31 @@ const TodoDetail = () => {
                 <ul className="space-y-3">
                   {todo.subtodos.map((subtask, index) => (
                     <li key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white transition-colors">
-                      <button
-                        onClick={() => toggleSubtaskCompletion(todo._id, index)}
-                        className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200
-                          ${subtask.completed
-                            ? "bg-green-500 border-green-500 text-white"
-                            : "border-gray-300 hover:border-green-400 hover:bg-green-50"
-                          }`}
-                      >
-                        {subtask.completed && (
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </button>
-                      <span className={`text-base flex-1 ${subtask.completed ? "line-through text-gray-400" : "text-gray-700"}`}>
-                        {subtask.title}
-                      </span>
+                  <button
+                    onClick={() => toggleSubtaskCompletion(todo._id, index)}
+                    className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200
+                      ${subtask.completed
+                        ? "bg-green-500 border-green-500 text-white"
+                        : "border-gray-300 hover:border-green-400 hover:bg-green-50"
+                      }`}
+                  >
+                    {subtask.completed && (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </button>
+                  <input
+                    type="radio"
+                    name={"subtask-radio-group"}
+                    checked={subtask.completed}
+                    onChange={() => toggleSubtaskCompletion(todo._id, index)}
+                    className="w-6 h-6 cursor-pointer text-green-500 ml-2"
+                    aria-label={`Mark subtask ${subtask.title} as completed`}
+                  />
+                  <span className={`text-base flex-1 ${subtask.completed ? "line-through text-gray-400" : "text-gray-700"}`}>
+                    {subtask.title}
+                  </span>
                     </li>
                   ))}
                 </ul>

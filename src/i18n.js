@@ -89,7 +89,7 @@ const resources = {
       "No comments yet. Be the first to add one!": "No comments yet. Be the first to add one!",
 
       // Home
-      "Welcome to UpTrack": "Welcome to UpTrack",
+      "Welcome to UpTrack": "Welcome to Task.Dev",
       "Your Personal Todo Manager": "Your Personal Todo Manager",
       "Get Started": "Get Started",
       "Features": "Features",
