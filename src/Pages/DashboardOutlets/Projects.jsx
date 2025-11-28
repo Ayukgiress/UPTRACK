@@ -175,6 +175,7 @@ const Projects = () => {
                     {t('Invite')}
                   </button>
                   <button
+                    onClick={() => navigate(`/dashboard/projects/${project._id}`)}
                     className="flex-1 bg-primary text-primary-foreground px-4 py-3 rounded-xl hover:bg-primary/90 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium shadow-md hover:shadow-lg"
                   >
                     <Eye size={16} />
