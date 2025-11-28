@@ -5,7 +5,7 @@ import { useAuth } from './AuthContext';
 import { toast } from 'sonner';
 import { ArrowLeft, FolderOpen, Users, CheckCircle, Clock, Plus, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import TodoModal from '../Components/Modals/TodoModal';
+import TodoModal from '../Components/Modals/Todo';
 import { API_BASE_URL } from '../lib/constants';
 import { groupTodosByTypeAndPriority } from '../lib/utils';
 
