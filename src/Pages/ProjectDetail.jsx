@@ -30,7 +30,7 @@ const ProjectDetail = () => {
   const fetchProjectDetails = async () => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/projects/api/projects/${projectId}`,
+        `${API_BASE_URL}/projects/api/projects/project/${projectId}`,
         {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -48,7 +48,7 @@ const ProjectDetail = () => {
   const fetchProjectTodos = async () => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/todos/api/todos/project/${projectId}`,
+        `${API_BASE_URL}/projects/api/projects/${projectId}/tasks`,
         {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
