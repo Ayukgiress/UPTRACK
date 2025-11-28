@@ -12,6 +12,7 @@ import { API_BASE_URL } from '../../lib/constants';
 const Projects = () => {
   const { t } = useTranslation();
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
