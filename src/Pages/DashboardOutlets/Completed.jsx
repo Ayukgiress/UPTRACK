@@ -207,20 +207,22 @@ const Completed = () => {
 };
 
 const CompletedTodoCard = ({ todo, onDeleteTodo, onToggleSubtaskCompletion, t }) => {
+  const navigate = useNavigate();
+
   return (
     <div
       onClick={() => {
         navigate(`/todo/${todo._id}?email=${todo.assignedTo || todo.createdBy}`);
       }}
-      className="group relative p-6 rounded-2xl transition-all duration-300 border-2 bg-gradient-to-br from-green-50 dark:from-green-900/10 to-emerald-50 dark:to-emerald-900/10 border-green-200 dark:border-green-800 hover:border-green-300 dark:hover:border-green-700 hover:shadow-xl hover:scale-[1.02] cursor-pointer"
+      className="group relative p-6 rounded-2xl transition-all duration-300 border-2 bg-card border-border hover:border-primary/50 hover:shadow-2xl hover:scale-[1.02] cursor-pointer"
     >
       <div className={`absolute top-4 right-4 w-3 h-3 rounded-full
         ${todo.priority === "high" ? "bg-red-500" :
           todo.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}>
       </div>
 
-      <div className="flex items-start justify-between mb-4">
-        <div className="w-8 h-8 rounded-full bg-green-500 border-2 border-green-500 text-white flex items-center justify-center">
+      <div className="flex items-start justify-between mb-6">
+        <div className="w-10 h-10 rounded-full bg-green-500 border-2 border-green-500 text-white flex items-center justify-center shadow-md">
           <CheckCircle className="w-5 h-5" />
         </div>
 
@@ -230,7 +232,7 @@ const CompletedTodoCard = ({ todo, onDeleteTodo, onToggleSubtaskCompletion, t })
               e.stopPropagation();
               onDeleteTodo(todo._id);
             }}
-            className="p-2 text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 rounded-lg transition-colors"
+            className="p-2 text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 rounded-xl transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>

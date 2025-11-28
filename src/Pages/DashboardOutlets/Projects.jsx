@@ -133,50 +133,53 @@ const Projects = () => {
           </button>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <div key={project._id} className="bg-card rounded-xl shadow-lg border border-border p-6 hover:shadow-xl transition-shadow">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-card-foreground mb-2 line-clamp-2">
-                    {project.name}
-                  </h3>
+            <div key={project._id} className="bg-card rounded-2xl shadow-xl border border-border p-6 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 group">
+              <div className="flex flex-col h-full">
+                <div className="flex-1 mb-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <h3 className="text-xl font-bold text-card-foreground line-clamp-2 leading-tight">
+                      {project.name}
+                    </h3>
+                  </div>
+
                   {project.description && (
-                    <p className="text-muted-foreground text-sm mb-3 line-clamp-3">
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-3 leading-relaxed">
                       {project.description}
                     </p>
                   )}
+
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
+                      {project.status || 'Active'}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <span className="flex items-center gap-2">
+                      <Users size={16} />
+                      {(project.contributors?.length || 0) + 1} contributors
+                    </span>
+                    <span className="text-xs">{new Date(project.createdAt).toLocaleDateString()}</span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400">
-                  {project.status || 'Active'}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                <span className="flex items-center gap-1">
-                  <Users size={14} />
-                  {(project.contributors?.length || 0) + 1} contributors
-                </span>
-                <span>{new Date(project.createdAt).toLocaleDateString()}</span>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={() => openInviteModal(project)}
-                  className="flex-1 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 transition-colors flex items-center justify-center gap-2 text-sm"
-                >
-                  <UserPlus size={16} />
-                  {t('Invite')}
-                </button>
-                <button
-                  className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 text-sm"
-                >
-                  <Eye size={16} />
-                  {t('View')}
-                </button>
+                <div className="flex gap-3 mt-auto">
+                  <button
+                    onClick={() => openInviteModal(project)}
+                    className="flex-1 bg-secondary text-secondary-foreground px-4 py-3 rounded-xl hover:bg-secondary/80 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium shadow-md hover:shadow-lg"
+                  >
+                    <UserPlus size={16} />
+                    {t('Invite')}
+                  </button>
+                  <button
+                    className="flex-1 bg-primary text-primary-foreground px-4 py-3 rounded-xl hover:bg-primary/90 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium shadow-md hover:shadow-lg"
+                  >
+                    <Eye size={16} />
+                    {t('View')}
+                  </button>
+                </div>
               </div>
             </div>
           ))}

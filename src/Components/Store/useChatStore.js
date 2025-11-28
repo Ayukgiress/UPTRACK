@@ -139,7 +139,6 @@ export const useChatStore = create((set, get) => ({
 
     setSelectedUser: (selectedUser) => {
         set({ selectedUser });
-        // Mark messages as read for the selected user
         if (selectedUser) {
             set((state) => ({
                 unreadMessagesPerUser: {

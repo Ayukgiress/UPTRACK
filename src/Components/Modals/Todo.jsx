@@ -186,11 +186,11 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-900">Add New Todo</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50">
+      <div className="bg-card rounded-2xl p-8 w-full max-w-md shadow-2xl border border-border">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-card-foreground">Add New Todo</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-2 rounded-lg hover:bg-muted transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -227,16 +227,16 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
               type="text"
               value={todo.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
-              className={`border rounded-lg p-2 w-full bg-white text-gray-900 placeholder-gray-400 font-medium ${errors.title ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className={`border rounded-xl px-4 py-3 w-full bg-background text-foreground placeholder-muted-foreground font-medium transition-all duration-200 ${errors.title ? 'border-destructive focus:ring-destructive' : 'border-input hover:border-ring focus:border-ring'} focus:outline-none focus:ring-2 focus:ring-ring/20`}
               placeholder="Enter todo title"
             />
-            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+            {errors.title && <p className="text-destructive text-sm mt-2">{errors.title}</p>}
           </div>
 
           <textarea
             value={todo.description}
             onChange={(e) => handleInputChange('description', e.target.value)}
-            className="border border-gray-300 rounded-lg p-2 w-full min-h-[100px] bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-input rounded-xl px-4 py-3 w-full min-h-[100px] bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-ring transition-all duration-200 resize-none"
             placeholder="Enter todo description (optional)"
           />
 
@@ -269,12 +269,12 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
 
           {taskType === 'project' && (
             <>
-              <div className="mt-4">
-                <label className="block text-sm font-medium mb-2 text-gray-900">Project *</label>
+              <div className="mt-6">
+                <label className="block text-sm font-semibold mb-3 text-card-foreground">Project *</label>
                 <select
                   value={selectedProject}
                   onChange={(e) => handleProjectChange(e.target.value)}
-                  className={`border rounded-lg p-2 w-full bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.project ? 'border-red-500' : 'border-gray-300'}`}
+                  className={`border rounded-xl px-4 py-3 w-full bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-ring transition-all duration-200 ${errors.project ? 'border-destructive focus:ring-destructive' : 'border-input hover:border-ring'}`}
                 >
                   <option value="">Select a project</option>
                   {projects.map((project) => (
@@ -283,17 +283,17 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
                     </option>
                   ))}
                 </select>
-                {errors.project && <p className="text-red-500 text-sm mt-1">{errors.project}</p>}
+                {errors.project && <p className="text-destructive text-sm mt-2">{errors.project}</p>}
               </div>
 
-              <div className="mt-4">
-                <label className="block text-sm font-medium mb-2 text-gray-900">
+              <div className="mt-6">
+                <label className="block text-sm font-semibold mb-3 text-card-foreground">
                   Assign to Contributor *
                 </label>
                 <select
                   value={assignedTo}
                   onChange={(e) => setAssignedTo(e.target.value)}
-                  className={`border rounded-lg p-2 w-full bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.assignedTo ? 'border-red-500' : 'border-gray-300'}`}
+                  className={`border rounded-xl px-4 py-3 w-full bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-ring transition-all duration-200 ${errors.assignedTo ? 'border-destructive focus:ring-destructive' : 'border-input hover:border-ring'}`}
                 >
                   <option value="">Select a contributor</option>
                   {contributors.map((contributor) => (
@@ -302,24 +302,24 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
                     </option>
                   ))}
                 </select>
-                {errors.assignedTo && <p className="text-red-500 text-sm mt-1">{errors.assignedTo}</p>}
+                {errors.assignedTo && <p className="text-destructive text-sm mt-2">{errors.assignedTo}</p>}
               </div>
             </>
           )}
 
           {taskType === 'personal' && (
-            <div className="mt-4">
-              <label className="block text-sm font-medium mb-2 text-gray-900">Supervisor Email *</label>
+            <div className="mt-6">
+              <label className="block text-sm font-semibold mb-3 text-card-foreground">Supervisor Email *</label>
               <input
                 type="email"
                 value={supervisorEmail}
                 onChange={(e) => setSupervisorEmail(e.target.value)}
-                className={`border rounded-lg p-2 w-full bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.supervisorEmail ? 'border-red-500' : 'border-gray-300'}`}
+                className={`border rounded-xl px-4 py-3 w-full bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-ring transition-all duration-200 ${errors.supervisorEmail ? 'border-destructive focus:ring-destructive' : 'border-input hover:border-ring'}`}
                 placeholder="Enter supervisor email for invitation"
               />
-              {errors.supervisorEmail && <p className="text-red-500 text-sm mt-1">{errors.supervisorEmail}</p>}
-              <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-700">
+              {errors.supervisorEmail && <p className="text-destructive text-sm mt-2">{errors.supervisorEmail}</p>}
+              <div className="mt-4 p-4 bg-muted/50 border border-border rounded-xl">
+                <p className="text-sm text-muted-foreground">
                   <strong>Personal Task:</strong> This task will be assigned to the specified supervisor email for review and management.
                 </p>
               </div>
@@ -359,22 +359,22 @@ const TodoModal = ({ isOpen, onClose, onAddTodos }) => {
 
           {errors.submit && <p className="text-red-500 text-sm text-center">{errors.submit}</p>}
 
-          <div className="flex justify-between gap-2 pt-4">
+          <div className="flex justify-end gap-3 pt-6 border-t border-border">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="bg-gray-100 text-gray-700 rounded-lg px-4 py-2 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-3 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-medium shadow-lg hover:shadow-xl"
             >
               {isSubmitting && (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
               )}
               {isSubmitting ? 'Adding...' : 'Add Todo'}
             </button>

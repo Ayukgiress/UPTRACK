@@ -295,12 +295,12 @@ const TodoCard = ({ todo, canComplete, onToggleCompletion, onToggleSubtaskComple
       onClick={() => {
         navigate(`/todo/${todo._id}?email=${todo.assignedTo || todo.createdBy}`);
       }}
-      className="group relative p-6 rounded-2xl transition-all duration-300 border-2 bg-card border-border hover:shadow-lg hover:scale-105 cursor-pointer"
+      className="group relative p-6 rounded-2xl transition-all duration-300 border-2 bg-card border-border hover:border-primary/50 hover:shadow-2xl hover:scale-[1.02] cursor-pointer"
     >
       <div className={`absolute top-4 right-4 w-3 h-3 rounded-full ${todo.priority === "high" ? "bg-red-500" : todo.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}>
       </div>
 
-      <div className="flex items-start justify-between mb-4">
+      <div className="flex items-start justify-between mb-6">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -310,8 +310,9 @@ const TodoCard = ({ todo, canComplete, onToggleCompletion, onToggleSubtaskComple
             }
             onToggleCompletion(todo);
           }}
-          className="w-8 h-8 rounded-full border-2 border-border hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 flex items-center justify-center transition-all duration-200"
+          className="w-10 h-10 rounded-full border-2 border-border hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 flex items-center justify-center transition-all duration-200 shadow-md"
         >
+          <Circle className="w-5 h-5" />
         </button>
 
         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -320,7 +321,7 @@ const TodoCard = ({ todo, canComplete, onToggleCompletion, onToggleSubtaskComple
               e.stopPropagation();
               onOpenEditModal(todo);
             }}
-            className="p-2 text-primary hover:bg-primary/10 dark:hover:bg-primary/20 rounded-lg transition-colors"
+            className="p-2 text-primary hover:bg-primary/10 dark:hover:bg-primary/20 rounded-xl transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -331,7 +332,7 @@ const TodoCard = ({ todo, canComplete, onToggleCompletion, onToggleSubtaskComple
               e.stopPropagation();
               onDeleteTodo(todo._id);
             }}
-            className="p-2 text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 rounded-lg transition-colors"
+            className="p-2 text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 rounded-xl transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>
