@@ -6,6 +6,7 @@ const InviteContributorModal = ({ isOpen, onClose, onInviteContributor, project 
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,22 +33,37 @@ const InviteContributorModal = ({ isOpen, onClose, onInviteContributor, project 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (validateForm() && project) {
-      try {
-        await onInviteContributor(email.trim(), name.trim(), project._id);
-        setEmail('');
-        setName('');
-        onClose();
-      } catch (error) {
-        // Error handling is done in parent component
-      }
+    if (!validateForm() || !project) {
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await onInviteContributor(email.trim(), name.trim(), project._id);
+      setEmail('');
+      setName('');
+      setErrors({});
+      onClose();
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || error.message || 'Failed to send invitation';
+      toast.error(errorMessage);
+      setErrors({ submit: errorMessage });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleInputChange = (value) => {
+  const handleEmailChange = (value) => {
     setEmail(value);
     if (errors.email) {
-      setErrors({});
+      setErrors(prev => ({ ...prev, email: undefined }));
+    }
+  };
+
+  const handleNameChange = (value) => {
+    setName(value);
+    if (errors.name) {
+      setErrors(prev => ({ ...prev, name: undefined }));
     }
   };
 
@@ -78,7 +94,7 @@ const InviteContributorModal = ({ isOpen, onClose, onInviteContributor, project 
               <input
                 type="email"
                 value={email}
-                onChange={(e) => handleInputChange(e.target.value)}
+                onChange={(e) => handleEmailChange(e.target.value)}
                 className={`border rounded-lg p-3 pl-10 w-full bg-background text-foreground ${errors.email ? 'border-red-500' : 'border-border'}`}
                 placeholder="Enter email address"
               />
@@ -93,11 +109,18 @@ const InviteContributorModal = ({ isOpen, onClose, onInviteContributor, project 
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="border rounded-lg p-3 w-full bg-background text-foreground border-border"
+              onChange={(e) => handleNameChange(e.target.value)}
+              className={`border rounded-lg p-3 w-full bg-background text-foreground ${errors.name ? 'border-red-500' : 'border-border'}`}
               placeholder="Enter contributor name"
             />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
           </div>
+
+          {errors.submit && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600">
+              <p>{errors.submit}</p>
+            </div>
+          )}
 
           <div className="bg-muted/50 rounded-lg p-3 text-sm text-muted-foreground">
             <p>An invitation will be sent to this email address. They will be able to view and contribute to project tasks.</p>
@@ -113,10 +136,15 @@ const InviteContributorModal = ({ isOpen, onClose, onInviteContributor, project 
             </button>
             <button
               type="submit"
-              className="bg-primary text-primary-foreground rounded-lg px-4 py-2 hover:bg-primary/90 transition-colors flex items-center gap-2"
+              disabled={isLoading}
+              className={`rounded-lg px-4 py-2 transition-colors flex items-center gap-2 ${
+                isLoading
+                  ? 'bg-primary/50 text-primary-foreground cursor-not-allowed'
+                  : 'bg-primary text-primary-foreground hover:bg-primary/90'
+              }`}
             >
               <Mail size={16} />
-              Send Invitation
+              {isLoading ? 'Sending...' : 'Send Invitation'}
             </button>
           </div>
         </form>

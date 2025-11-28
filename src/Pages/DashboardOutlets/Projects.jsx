@@ -85,10 +85,10 @@ const Projects = () => {
 
       toast.success('Invitation sent successfully!');
       setIsInviteModalOpen(false);
-      fetchProjects(); // Refresh to get updated contributor count
+      fetchProjects();
     } catch (error) {
       console.error('Error inviting contributor:', error);
-      toast.error('Failed to send invitation');
+      throw error;
     }
   };
 
