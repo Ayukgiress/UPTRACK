@@ -29,6 +29,7 @@ import TodoDetail from './Pages/TodoDetail'
 import Charts from './Pages/DashboardOutlets/Charts'
 import Supervisor from './Pages/DashboardOutlets/Supervisor'
 import Projects from './Pages/DashboardOutlets/Projects'
+import ProjectDetail from './Pages/ProjectDetail'
 import PasswordReset from './Pages/Password/ResetToken'
 import PasswordResetRequest from './Pages/Password/ResetPassword'
 import AcceptInvitation from './Pages/AcceptInvitation'
@@ -59,13 +60,14 @@ function AppContent() {
           <Route path="/password" element={<PasswordResetRequest/>} />
           <Route path="/projects/:projectId/accept-invitation" element={<AcceptInvitation />} />
           <Route path="/todo/:id" element={<TodoDetail />} />
-             <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<Overview />} />
             <Route path="settings" element={<Settings />} />
             <Route path="pending" element={<Pending />} />
             <Route path="completed" element={<Completed />} />
             <Route path="supervisor" element={<Supervisor />} />
             <Route path="projects" element={<Projects />} />
+            <Route path="projects/:projectId" element={<ProjectDetail />} />
              <Route path="charts" element={<Charts />} />
 
           </Route>
