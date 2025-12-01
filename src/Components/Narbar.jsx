@@ -47,7 +47,7 @@ const Navbar = () => {
             <Link to="/" className="flex items-center">
               
               <div className='flex items-center justify-center gap-4'>
-                <img src="/public/images/Untitled design (1).png" alt="Tasky.dev              
+              <img src="/images/Untitled design (1).png" alt="Tasky.dev
 " className='flex items-center justify-center w-12 h-12 rounded-lg' />
 
 <span className='text-blue-700 text-2xl'>                 Tasky.dev              

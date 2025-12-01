@@ -48,7 +48,7 @@ const Projects = () => {
   const handleCreateProject = async (projectData) => {
     try {
       const response = await axios.post(
-      `${API_BASE_URL}/projects/api/projects`,
+        `${API_BASE_URL}/projects/api/projects`,
         {
           ...projectData,
           createdBy: currentUser._id
@@ -60,6 +60,8 @@ const Projects = () => {
           }
         }
       );
+
+
 
       setProjects(prev => [response.data, ...prev]);
       toast.success('Project created successfully!');
